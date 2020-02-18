@@ -1,0 +1,3 @@
+({
+  example: function(cmp) {}
+});

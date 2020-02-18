@@ -1,0 +1,4 @@
+{
+  "commandDescription": "Compare two metadata format source directories and build a third with the changes",
+  "configfileFlagDescription": "Config file with a replacement map (needs instructions)"
+}

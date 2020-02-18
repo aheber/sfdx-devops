@@ -1,0 +1,8 @@
+{
+  "commandDescription": "Compare two metadata format source directories and build a third with the changes",
+  "basedirFlagDescription": "Baseline metadata directory",
+  "changeddirFlagDescription": "Changed metadata directory",
+  "outputdirFlagDescription": "Output directory for identified changes",
+  "destructivechangesFlagDescription": "If destructive changes should be included and if so which mode",
+  "errorNoOrgResults": "No results found for the org '%s'."
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Unchanged</fullName>
+        <categories>Test</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Unchanged</shortDescription>
+        <value>Unchanged</value>
+    </labels>
+    <labels>
+        <fullName>New</fullName>
+        <categories>Test</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>New</shortDescription>
+        <value>New</value>
+    </labels>
+    <labels>
+        <fullName>Changed</fullName>
+        <categories>Test</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Changed</shortDescription>
+        <value>Changed</value>
+    </labels>
+    <labels>
+        <fullName>TagChanged</fullName>
+        <categories>Test</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TagChanged</shortDescription>
+        <value>TagChanged</value>
+    </labels>
+</CustomLabels>
