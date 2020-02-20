@@ -1,8 +1,8 @@
 import TypeDiffXml from "./typeHandlers/type-diff-xml";
-import { closeFilesAsync } from "dir-compare/src/fileCompareHandler/closeFile";
-import * as buffPool from "dir-compare/src/fs/BufferPool";
-import * as fileDescriptorQueue from "dir-compare/src/fs/fileDescriptorQueue";
-import * as fsPromise from "dir-compare/src/fs/fsPromise";
+import { closeFilesAsync } from "../fileCompareHandler/fileCompareHandler/closeFile";
+import * as buffPool from "../fileCompareHandler/fs/BufferPool";
+import * as fileDescriptorQueue from "../fileCompareHandler/fs/fileDescriptorQueue";
+import * as fsPromise from "../fileCompareHandler/fs/fsPromise";
 import { getMetadataInfo } from "./metadata-info";
 
 const MAX_CONCURRENT_FILE_COMPARE = 1;
