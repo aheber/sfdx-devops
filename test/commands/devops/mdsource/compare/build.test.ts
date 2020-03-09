@@ -1,11 +1,8 @@
 /* eslint-disable no-warning-comments */
 // TODO: TESTS TO WRITE
-// TODO: Ensure destructiveChangesPost.xml is created if the command flag is pas  sed
+// TODO: Ensure destructiveChangesPost.xml is created if the command flag is passed
 
 // TODO: only specific translations
-// TODO: only specific custom fields on objects
-// TODO: only changed WFRs
-// TODO: only changed Validation Rules
 
 // tslint:disable no-unused-expression
 // Disabled rule due to expect being a dangling function
@@ -15,7 +12,6 @@ import * as rimrafFunc from "rimraf";
 import * as util from "util";
 const rimraf = util.promisify(rimrafFunc) as any;
 import { compareDirectories, print } from "../../../../utils/compare-dirs";
-// import { ensureJsonMap, ensureString } from "@salesforce/ts-types";
 
 const KEEP_OUTPUT = false;
 
@@ -50,10 +46,6 @@ describe("devops:mdsource:compare:build", () => {
     .filter(dirent => dirent.isDirectory())
     .forEach(async dirent => {
       const dirName = dirent.name;
-      // console.log("Test", dirName);
-      // if (dirName !== "testLabels") {
-      //   return;
-      // }
       test
         .withProject({ sourceApiVersion: "47.0" })
         .command([

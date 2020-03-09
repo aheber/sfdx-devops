@@ -1,3 +1,5 @@
-import TypeDiffXml from "./type-diff-xml";
+import MetadataDiff from "./type-metadata-base";
 
-export default class WorkflowDiff extends TypeDiffXml {}
+export default class WorkflowDiff extends MetadataDiff {
+  coreObject = "Workflow";
+}

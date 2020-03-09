@@ -27,16 +27,20 @@ async function buildOutput(fileDiffs, outputPath, path1, path2, packageXML) {
       if (metadataType.mdtHandler && metadataType.mdtHandler.buildOutput) {
         // if filename only exists in src then copy holesale?
         // if both exist then
-        const customOutput = await metadataType.mdtHandler.buildOutput(
-          path1 + "/" + key + "/" + fileName,
-          path2 + "/" + key + "/" + fileName
-        );
+        try {
+          const customOutput = await metadataType.mdtHandler.buildOutput(
+            path1 + "/" + key + "/" + fileName,
+            path2 + "/" + key + "/" + fileName
+          );
 
-        await fs.writeFile(
-          outputPath + "/" + key + "/" + fileName,
-          customOutput
-        );
-        continue;
+          await fs.writeFile(
+            outputPath + "/" + key + "/" + fileName,
+            customOutput
+          );
+          continue;
+        } catch (error) {
+          // will just copy the source to the org
+        }
       }
       try {
         await fs.copy(
@@ -168,7 +172,7 @@ export default async function doIt({
     ignoreLineEnding: true,
     ignoreWhiteSpaces: true,
     excludeFilter:
-      "package.xml,*.objectTranslation,et4ae5__*,*.profile,*.quickAction,*.topicsForObjects,standard__*.app,Quick_Link*.md,layouts,certs,datacategorygroups,emailservices,reportTypes,Case.settings,Knowledge.settings,OrgPreference.settings",
+      "package.xml,et4ae5__*,*.profile,standard__*.app,Quick_Link*.md,layouts,certs,datacategorygroups,emailservices,reportTypes,Case.settings,Knowledge.settings,OrgPreference.settings",
     paths: [path1, path2],
     metadataInfo
   };

@@ -6,5 +6,5 @@
 /package-lock.json
 /tmp
 node_modules
-/test/*/force-apps/*/output
+/test/**/force-apps/*/output
 test/commands/devops/mdsource/compare/force-apps/base
