@@ -15,48 +15,31 @@ export default class CustomObjectDiff extends MetadataDiff {
       pieces2.components
     );
 
-    const cbp = ["ControlledByParent"];
-    // If either of the sharing models are changing to ControlledByParent
-    // Then we must include the MasterDetail fields in the change
-    if (
-      (super.isEqual(pieces1.core.sharingModel, cbp) &&
-        super.isEqual(pieces2.core.sharingModel, cbp) === false) ||
-      (super.isEqual(pieces1.core.externalSharingModel, cbp) &&
-        super.isEqual(pieces2.core.externalSharingModel, cbp) === false)
-    ) {
-      if (!changes.CustomObject.fields) {
-        changes.CustomObject.fields = [];
-      }
-      // Get any MasterDetail fields that aren't already identified as changes
-      const mdtFields = Object.keys(pieces1.components.fields)
-        .map(f => pieces1.components.fields[f])
-        // get only MasterDetail fields
-        .filter(f => super.isEqual(f.type, ["MasterDetail"]))
-        // get only those not already included in the change detection
-        .filter(f => !changes.CustomObject.fields.includes(f));
-      // merge the new fields
-      changes.CustomObject.fields.push(...mdtFields);
-    } else {
-      // Neither sharing model is trying to become ControlledByParent
-      // If they are the same then remove them from the output
-      if (super.isEqual(pieces1.core.sharingModel, pieces2.core.sharingModel)) {
-        delete pieces1.core.sharingModel;
-        delete pieces2.core.sharingModel;
-      }
-      if (
-        super.isEqual(
-          pieces1.core.externalSharingModel,
-          pieces2.core.externalSharingModel
-        )
-      ) {
-        delete pieces1.core.externalSharingModel;
-        delete pieces2.core.externalSharingModel;
-      }
-    }
     if (
       Object.keys(changes.CustomObject).length > 0 ||
       this.isEqual(pieces1.core, pieces2.core) === false
     ) {
+      const cbp = ["ControlledByParent"];
+      // If either of the sharing models are set to ControlledByParent
+      // Then we must include the MasterDetail fields in the change
+      if (
+        super.isEqual(pieces1.core.sharingModel, cbp) ||
+        super.isEqual(pieces1.core.externalSharingModel, cbp)
+      ) {
+        if (!changes.CustomObject.fields) {
+          changes.CustomObject.fields = [];
+        }
+        // Get any MasterDetail fields that aren't already identified as changes
+        const mdtFields = Object.keys(pieces1.components.fields)
+          .map(f => pieces1.components.fields[f])
+          // get only MasterDetail fields
+          .filter(f => super.isEqual(f.type, ["MasterDetail"]))
+          // get only those not already included in the change detection
+          .filter(f => !changes.CustomObject.fields.includes(f));
+        // merge the new fields
+        changes.CustomObject.fields.push(...mdtFields);
+      }
+
       changes.CustomObject = Object.assign(changes.CustomObject, pieces1.core);
     }
     return changes;

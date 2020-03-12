@@ -115,6 +115,7 @@
   <enableEnhancedLookup>true</enableEnhancedLookup>
   <enableFeeds>true</enableFeeds>
   <enableHistory>true</enableHistory>
+  <externalSharingModel>Private</externalSharingModel>
   <recordTypeTrackFeedHistory>true</recordTypeTrackFeedHistory>
   <searchLayouts>
     <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
