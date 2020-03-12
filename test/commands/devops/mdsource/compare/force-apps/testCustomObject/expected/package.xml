@@ -4,6 +4,8 @@
     <name>CustomObject</name>
     <members>Common</members>
     <members>CoreChange</members>
+    <members>MDChildDifferentSharing</members>
+    <members>MDChildSameSharing</members>
     <members>Unique_To_Src</members>
   </types>
   <version>47.0</version>

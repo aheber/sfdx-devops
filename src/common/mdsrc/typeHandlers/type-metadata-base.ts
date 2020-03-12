@@ -20,7 +20,7 @@ export default class MetadataDiff extends TypeDiffXml {
     return builder.buildObject(changes);
   }
 
-  public async getChanges(p1, p2) {
+  protected async getChanges(p1, p2) {
     const xmls = await this.loadXMLData(p1, p2);
     // const changes = {} as any;
     // part out into core properties and sub-objects, handle special-case sub-objects
@@ -41,8 +41,11 @@ export default class MetadataDiff extends TypeDiffXml {
     return changes;
   }
 
-  private breakObjectIntoParts(xml) {
-    const data = { core: {}, components: {} };
+  protected breakObjectIntoParts(xml) {
+    const data = {
+      core: {} as { [key: string]: any },
+      components: {} as { [key: string]: any }
+    };
     // look through each key inside the core object
     // console.log(xml);
     // eslint-disable-next-line guard-for-in
@@ -66,7 +69,7 @@ export default class MetadataDiff extends TypeDiffXml {
     return data;
   }
 
-  private getDifferences(l1, l2): any {
+  protected getDifferences(l1, l2): any {
     const changes = {};
     for (const k in l1) {
       if (k === "Core") {
