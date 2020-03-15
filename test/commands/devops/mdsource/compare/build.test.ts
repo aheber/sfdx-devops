@@ -13,8 +13,6 @@ import * as util from "util";
 const rimraf = util.promisify(rimrafFunc) as any;
 import { compareDirectories, print } from "../../../../utils/compare-dirs";
 
-const KEEP_OUTPUT = false;
-
 // This will run the tool against each folder in the ./test/force-apps folder
 // It needs a srcmdt and orgmdt and is expected to create an output folder
 // with any items that srcmdt has that orgmdt does not, the output folder is compared to the expected folder
@@ -25,20 +23,6 @@ describe("devops:mdsource:compare:build", () => {
       "./test/commands/devops/mdsource/compare/force-apps/**/output"
     );
   });
-  afterEach(async () => {
-    if (KEEP_OUTPUT) {
-      return;
-    }
-    await rimraf(
-      "./test/commands/devops/mdsource/compare/force-apps/**/output"
-    );
-  });
-  // beforeEach(async () => {
-  //   if (KEEP_OUTPUT) {
-  //     return;
-  //   }
-  //   await rimraf(`./test/force-apps/**/output`);
-  // });
 
   readdirSync("./test/commands/devops/mdsource/compare/force-apps", {
     withFileTypes: true
@@ -46,6 +30,9 @@ describe("devops:mdsource:compare:build", () => {
     .filter(dirent => dirent.isDirectory())
     .forEach(async dirent => {
       const dirName = dirent.name;
+      // if (dirName !== "testCustomObject") {
+      //   return;
+      // }
       test
         .withProject({ sourceApiVersion: "47.0" })
         .command([

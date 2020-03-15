@@ -1,7 +1,7 @@
 {
   "name": "sfdx-devops",
   "description": "SFDX plugin for DevOps actions related to Salesforce Development",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "author": "Anthony Heber @aheber",
   "bugs": "https://github.com/aheber/sfdx-devops/issues",
   "dependencies": {
@@ -12,6 +12,7 @@
     "@salesforce/command": "^2",
     "@salesforce/core": "^2",
     "deep-equal": "^2.0.1",
+    "deep-object-diff": "^1.1.0",
     "dir-compare": "^2.0.0",
     "eol": "^0.9.1",
     "fs-extra": "^8.1.0",

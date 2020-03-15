@@ -1,7 +1,9 @@
 import MetadataDiff from "./type-metadata-base";
 
 export default class CustomObjectDiff extends MetadataDiff {
-  coreObject = "CustomObject";
+  getCoreObjectName() {
+    return "CustomObject";
+  }
 
   // overridden from the parent so we can do some magic with sharing models
   protected async getChanges(p1, p2) {
@@ -17,7 +19,7 @@ export default class CustomObjectDiff extends MetadataDiff {
 
     if (
       Object.keys(changes.CustomObject).length > 0 ||
-      this.isEqual(pieces1.core, pieces2.core) === false
+      this.wouldChangeOrg(pieces1.core, pieces2.core)
     ) {
       const cbp = ["ControlledByParent"];
       // If either of the sharing models are set to ControlledByParent

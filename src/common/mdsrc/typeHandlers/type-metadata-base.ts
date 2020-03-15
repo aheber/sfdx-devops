@@ -1,14 +1,19 @@
 /* eslint-disable guard-for-in */
 import { Builder } from "xml2js";
 import TypeDiffXml from "./type-diff-xml";
+import { detailedDiff } from "deep-object-diff";
 
-export default class MetadataDiff extends TypeDiffXml {
-  coreObject = "CHANGEME";
+export default abstract class MetadataDiff extends TypeDiffXml {
+  abstract getCoreObjectName(): string;
+
+  protected getSubComponentNameKey(): string | { [key: string]: string } {
+    return "fullName";
+  }
 
   public async compare(p1, p2) {
     // console.log("Comparing objects", p1, p2);
     const changes = await this.getChanges(p1, p2);
-    return Object.keys(changes[this.coreObject]).length === 0;
+    return Object.keys(changes[this.getCoreObjectName()]).length === 0;
   }
 
   public async buildOutput(p1, p2) {
@@ -27,12 +32,13 @@ export default class MetadataDiff extends TypeDiffXml {
     const pieces1 = this.breakObjectIntoParts(xmls[0]);
     const pieces2 = this.breakObjectIntoParts(xmls[1]);
     const changes = this.getDifferences(pieces1.components, pieces2.components);
+
     if (
-      Object.keys(changes[this.coreObject]).length > 0 ||
-      this.isEqual(pieces1.core, pieces2.core) === false
+      Object.keys(changes[this.getCoreObjectName()]).length > 0 ||
+      this.wouldChangeOrg(pieces1.core, pieces2.core)
     ) {
-      changes[this.coreObject] = Object.assign(
-        changes[this.coreObject],
+      changes[this.getCoreObjectName()] = Object.assign(
+        changes[this.getCoreObjectName()],
         pieces1.core
       );
     }
@@ -49,14 +55,25 @@ export default class MetadataDiff extends TypeDiffXml {
     // look through each key inside the core object
     // console.log(xml);
     // eslint-disable-next-line guard-for-in
-    for (const k in xml[this.coreObject]) {
-      const subset = xml[this.coreObject][k];
+    for (const k in xml[this.getCoreObjectName()]) {
+      const subset = xml[this.getCoreObjectName()][k];
+      const names = this.getSubComponentNameKey();
+      let typeName;
+      if (typeof names === "object" && names[k] !== undefined) {
+        typeName = names[k];
+      } else {
+        typeName = names as string;
+      }
       // If the nested object contains a fullName attribute
-      if (typeof subset[0] === "object" && subset[0].fullName) {
+      if (
+        typeName !== undefined &&
+        typeof subset[0] === "object" &&
+        subset[0][typeName]
+      ) {
         const d = {};
         // eslint-disable-next-line guard-for-in
         for (const m of subset) {
-          d[m.fullName] = m;
+          d[m[typeName]] = m;
         }
         data.components[k] = d;
         // console.log("k", k);
@@ -67,6 +84,17 @@ export default class MetadataDiff extends TypeDiffXml {
     // if it has any of the key names then break it out into a separate object by that key name
     // return all of the parts
     return data;
+  }
+
+  protected wouldChangeOrg(o1, o2) {
+    const diff = detailedDiff(o1, o2) as any;
+    if (
+      Object.keys(diff.deleted).length > 0 ||
+      Object.keys(diff.updated).length > 0
+    ) {
+      return true;
+    }
+    return false;
   }
 
   protected getDifferences(l1, l2): any {
@@ -86,7 +114,6 @@ export default class MetadataDiff extends TypeDiffXml {
       } else {
         for (const n in p1) {
           if (p2[n] === undefined || this.isEqual(p1[n], p2[n]) === false) {
-            // console.log("Changes in", k, ":", n, p2[n], p1[n]);
             // eslint-disable-next-line max-depth
             if (changes[k] === undefined) {
               changes[k] = [];
@@ -97,7 +124,7 @@ export default class MetadataDiff extends TypeDiffXml {
       }
     }
     const output = {};
-    output[this.coreObject] = changes;
+    output[this.getCoreObjectName()] = changes;
     return output;
   }
 }

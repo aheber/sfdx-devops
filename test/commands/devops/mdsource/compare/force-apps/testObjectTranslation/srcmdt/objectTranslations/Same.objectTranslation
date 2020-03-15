@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <label><!-- Same --></label>
+        <name>Same__c</name>
+    </fields>
+    <fields>
+        <label><!-- Changed --></label>
+        <name>Changed__c</name>
+    </fields>
+    <fields>
+        <label><!-- New --></label>
+        <name>New__c</name>
+    </fields>
+    <fields>
+        <label><!-- Deleted --></label>
+        <name>Deleted__c</name>
+    </fields>
+    <layouts>
+        <layout>Test Layout</layout>
+        <sections>
+            <label><!-- Same --></label>
+            <section>Same</section>
+        </sections>
+        <sections>
+            <label><!-- Changed --></label>
+            <section>Changed</section>
+        </sections>
+        <sections>
+            <label><!-- New --></label>
+            <section>New</section>
+        </sections>
+        <sections>
+            <label><!-- Deleted --></label>
+            <section>Deleted</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Same --></label>
+        <name>Same</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Changed --></label>
+        <name>Changed</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- New --></label>
+        <name>New</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Old --></label>
+        <name>Old</name>
+    </quickActions>
+    <recordTypes>
+        <label><!-- Same --></label>
+        <name>Same</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Changed --></label>
+        <name>Changed</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- New --></label>
+        <name>New</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Old --></label>
+        <name>Old</name>
+    </recordTypes>
+    <webLinks>
+        <label><!-- Same --></label>
+        <name>Same</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Changed --></label>
+        <name>Changed</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- New --></label>
+        <name>New</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Old --></label>
+        <name>Old</name>
+    </webLinks>
+</CustomObjectTranslation>
