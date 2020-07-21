@@ -46,7 +46,7 @@ export default class Button extends SfdxCommand {
 
   public async run(): Promise<void> {
     const projectJson = await this.project.resolveProjectConfig();
-    const packageDirectories: any[] = projectJson.packageDirectories; // tslint:disable-line:no-any
+    const packageDirectories = projectJson.packageDirectories as any[]; // tslint:disable-line:no-any
 
     const buttonDirectories = [] as string[];
     for (const packageConfig of packageDirectories) {
@@ -65,7 +65,7 @@ export default class Button extends SfdxCommand {
     const buttons = (
       await (await this.org.getConnection()).sobject("LiveChatButton").find()
     ).reduce((o, v) => {
-      o[v.DeveloperName] = v;
+      o[(v as any).DeveloperName] = v;
       return o;
     }, {});
     console.log("Buttons ", buttons);

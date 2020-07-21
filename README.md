@@ -22,7 +22,7 @@ $ npm install -g sfdx-devops
 $ sfdx COMMAND
 running command...
 $ sfdx (-v|--version|version)
-sfdx-devops/0.2.4 win32-x64 node-v12.16.1
+sfdx-devops/0.2.5 win32-x64 node-v12.16.1
 $ sfdx --help [COMMAND]
 USAGE
   $ sfdx COMMAND
@@ -30,8 +30,42 @@ USAGE
 ```
 <!-- usagestop -->
 <!-- commands -->
+* [`sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopschatbutton--b-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 * [`sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopsmdsourcecomparebuild--b-string--c-string--o-string--d-string--v-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopssitesettings--s-string--g-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 * [`sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopsworkflowemailalertreplaceaddress--c-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+
+## `sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+
+Load Live Chat Buttons into the org via the UI
+
+```
+USAGE
+  $ sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+
+OPTIONS
+  -b, --buttons=buttons                                                             Comma-separated names of the buttons
+                                                                                    that should be loaded. Omission will
+                                                                                    load all buttons in source
+
+  -u, --targetusername=targetusername                                               username or alias for the target
+                                                                                    org; overrides default target org
+
+  --apiversion=apiversion                                                           override the api version used for
+                                                                                    api requests made by this command
+
+  --json                                                                            format output as json
+
+  --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
+                                                                                    this command invocation
+
+EXAMPLES
+  $ devops:chat:buttons
+  $ devops:chat:buttons -b Button_1,Button_2
+```
+
+_See code: [src\commands\devops\chat\button.ts](https://github.com/aheber/sfdx-devops/blob/v0.2.5/src\commands\devops\chat\button.ts)_
 
 ## `sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -75,7 +109,41 @@ EXAMPLES
      Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
 ```
 
-_See code: [src\commands\devops\mdsource\compare\build.ts](https://github.com/aheber/sfdx-devops/blob/v0.2.4/src\commands\devops\mdsource\compare\build.ts)_
+_See code: [src\commands\devops\mdsource\compare\build.ts](https://github.com/aheber/sfdx-devops/blob/v0.2.5/src\commands\devops\mdsource\compare\build.ts)_
+
+## `sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+
+Change settings on a Site
+
+```
+USAGE
+  $ sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+
+OPTIONS
+  -g, --guestapi=true|false                                                         Value to set on the guest API
+                                                                                    checkbox
+
+  -s, --sitename=sitename                                                           (required) Site name that should be
+                                                                                    modified
+
+  -u, --targetusername=targetusername                                               username or alias for the target
+                                                                                    org; overrides default target org
+
+  --apiversion=apiversion                                                           override the api version used for
+                                                                                    api requests made by this command
+
+  --json                                                                            format output as json
+
+  --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
+                                                                                    this command invocation
+
+EXAMPLES
+  $ devops:site:settings -s Help_Center -g true
+  $ devops:site:settings -s Help_Center -g false
+```
+
+_See code: [src\commands\devops\site\settings.ts](https://github.com/aheber/sfdx-devops/blob/v0.2.5/src\commands\devops\site\settings.ts)_
 
 ## `sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -101,7 +169,7 @@ EXAMPLE
   $ sfdx devops:workflow:emailalert:replaceaddress --configfile config/alertconfig.yaml
 ```
 
-_See code: [src\commands\devops\workflow\emailalert\replaceaddress.ts](https://github.com/aheber/sfdx-devops/blob/v0.2.4/src\commands\devops\workflow\emailalert\replaceaddress.ts)_
+_See code: [src\commands\devops\workflow\emailalert\replaceaddress.ts](https://github.com/aheber/sfdx-devops/blob/v0.2.5/src\commands\devops\workflow\emailalert\replaceaddress.ts)_
 <!-- commandsstop -->
 <!-- debugging-your-plugin -->
 # Debugging your plugin
