@@ -1,0 +1,4 @@
+{
+  "commandDescription": "Load Live Chat Buttons into the org via the UI",
+  "buttonsFlagDescription": "Comma-separated names of the buttons that should be loaded. Omission will load all buttons in source"
+}

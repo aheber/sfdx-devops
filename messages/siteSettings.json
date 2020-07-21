@@ -1,0 +1,5 @@
+{
+  "commandDescription": "Change settings on a Site",
+  "sitenameFlagDescription": "Site name that should be modified",
+  "guestApiFlagDescription": "Value to set on the guest API checkbox"
+}
