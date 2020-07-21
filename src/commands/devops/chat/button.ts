@@ -135,16 +135,9 @@ export default class Button extends SfdxCommand {
 
           // Picklist
           if (fieldData[key].fieldType === fieldTypes.picklist) {
-            console.log("Value Map", fieldData[key]?.domValueMap);
-            console.log("Matched Value", xmlData.LiveChatButton[key][0]);
-            console.log(
-              "Resolved Value",
-              fieldData[key]?.domValueMap?.[xmlData.LiveChatButton[key][0]]
-            );
             const val =
               fieldData[key]?.domValueMap?.[xmlData.LiveChatButton[key][0]] ||
               xmlData.LiveChatButton[key][0];
-            console.log("setting to", val);
             await page.select(escapeElementId(fieldData[key].domSelector), val);
           }
         }
