@@ -1,7 +1,7 @@
 {
   "name": "sfdx-devops",
   "description": "SFDX plugin for DevOps actions related to Salesforce Development",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "author": "Anthony Heber @aheber",
   "bugs": "https://github.com/aheber/sfdx-devops/issues",
   "dependencies": {
@@ -75,7 +75,7 @@
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "yarn lint",
-    "prepack": "rimraf lib && tsc -b || oclif-dev manifest && oclif-dev readme",
+    "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "lint": "eslint . --ext .ts",
     "version": "oclif-dev readme && git add README.md"

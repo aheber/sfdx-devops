@@ -22,7 +22,7 @@ $ npm install -g sfdx-devops
 $ sfdx COMMAND
 running command...
 $ sfdx (-v|--version|version)
-sfdx-devops/0.2.5 win32-x64 node-v12.16.1
+sfdx-devops/0.3.0 win32-x64 node-v12.16.1
 $ sfdx --help [COMMAND]
 USAGE
   $ sfdx COMMAND
@@ -65,7 +65,7 @@ EXAMPLES
   $ devops:chat:buttons -b Button_1,Button_2
 ```
 
-_See code: [src\commands\devops\chat\button.ts](https://github.com/aheber/sfdx-devops/blob/v0.2.5/src\commands\devops\chat\button.ts)_
+_See code: [src\commands\devops\chat\button.ts](https://github.com/aheber/sfdx-devops/blob/v0.3.0/src\commands\devops\chat\button.ts)_
 
 ## `sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -109,7 +109,7 @@ EXAMPLES
      Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
 ```
 
-_See code: [src\commands\devops\mdsource\compare\build.ts](https://github.com/aheber/sfdx-devops/blob/v0.2.5/src\commands\devops\mdsource\compare\build.ts)_
+_See code: [src\commands\devops\mdsource\compare\build.ts](https://github.com/aheber/sfdx-devops/blob/v0.3.0/src\commands\devops\mdsource\compare\build.ts)_
 
 ## `sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -143,7 +143,7 @@ EXAMPLES
   $ devops:site:settings -s Help_Center -g false
 ```
 
-_See code: [src\commands\devops\site\settings.ts](https://github.com/aheber/sfdx-devops/blob/v0.2.5/src\commands\devops\site\settings.ts)_
+_See code: [src\commands\devops\site\settings.ts](https://github.com/aheber/sfdx-devops/blob/v0.3.0/src\commands\devops\site\settings.ts)_
 
 ## `sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -169,7 +169,7 @@ EXAMPLE
   $ sfdx devops:workflow:emailalert:replaceaddress --configfile config/alertconfig.yaml
 ```
 
-_See code: [src\commands\devops\workflow\emailalert\replaceaddress.ts](https://github.com/aheber/sfdx-devops/blob/v0.2.5/src\commands\devops\workflow\emailalert\replaceaddress.ts)_
+_See code: [src\commands\devops\workflow\emailalert\replaceaddress.ts](https://github.com/aheber/sfdx-devops/blob/v0.3.0/src\commands\devops\workflow\emailalert\replaceaddress.ts)_
 <!-- commandsstop -->
 <!-- debugging-your-plugin -->
 # Debugging your plugin
