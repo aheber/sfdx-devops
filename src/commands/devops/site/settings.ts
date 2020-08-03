@@ -22,6 +22,8 @@ export default class Settings extends SfdxCommand {
 
   public static args = [];
 
+  private browser;
+
   protected static flagsConfig = {
     sitename: flags.string({
       char: "s",
@@ -48,6 +50,7 @@ export default class Settings extends SfdxCommand {
     const username = this.org.getUsername();
 
     const [browser, page] = await getBrowser(username);
+    this.browser = browser;
     // Workaround for not being able to manage Site.OptionsAllowGuestSupportApi via Metadata
     // https://success.salesforce.com/ideaView?id=0873A000000CYQzQAO
 
@@ -78,7 +81,14 @@ export default class Settings extends SfdxCommand {
       console.error("Browser: ERROR: Error saving Support API setting", error);
       throw error;
     }
-    await browser.close();
+    await this.browser.close();
+  }
+
+  async catch(error) {
+    if (this.browser) {
+      await this.browser.close();
+    }
+    super.catch(error);
   }
 
   async getSiteURL(siteName) {

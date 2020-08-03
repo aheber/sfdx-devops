@@ -14,8 +14,7 @@ export const fieldData = {
   },
   windowLanguage: {
     fieldType: fieldTypes.picklist,
-    domSelector:
-      "#j_id0:theForm:thePageBlock:editDataSection:j_id71:editWindowLanguage",
+    domSelector: "[id$='editWindowLanguage']",
   },
   routingType: {
     fieldType: fieldTypes.picklist,
@@ -26,6 +25,14 @@ export const fieldData = {
     fieldType: fieldTypes.text,
     domSelector:
       "#j_id0:theForm:thePageBlock:editDataSection:editAutoGreetingSection:editAutoGreeting",
+  },
+  chasitorIdleTimeout: {
+    fieldType: fieldTypes.text,
+    domSelector: "[id$='editChasitorIdleTimeout']",
+  },
+  chasitorIdleTimeoutWarning: {
+    fieldType: fieldTypes.text,
+    domSelector: "[id$='editChasitorIdleTimeoutWarning']",
   },
   customAgentName: {
     fieldType: fieldTypes.text,
@@ -39,8 +46,7 @@ export const fieldData = {
   },
   enableQueue: {
     fieldType: fieldTypes.checkbox,
-    domSelector:
-      "#j_id0:theForm:thePageBlock:editRoutingSection:j_id178:editHasQueue",
+    domSelector: "[id$='editHasQueue']",
   },
   isActive: {
     fieldType: fieldTypes.checkbox,
@@ -84,20 +90,21 @@ export const fieldData = {
   },
   perAgentQueueLength: {
     fieldType: fieldTypes.text,
-    domSelector:
-      "#j_id0:theForm:thePageBlock:editRoutingSection:j_id181:editPerAgentQueueLength",
+    domSelector: "[id$='editPerAgentQueueLength']",
   },
   postChatUrl: {
     fieldType: fieldTypes.text,
-    domSelector:
-      "#j_id0:theForm:thePageBlock:editCustomizationSection:j_id270:editPostchatUrlUrl",
+    domSelector: "[id$='editPostchatUrlUrl']",
   },
   queue: {
     fieldType: fieldTypes.text,
-    domSelector:
-      "#j_id0:theForm:thePageBlock:editRoutingSection:j_id113:editQueue",
+    domSelector: "[id$='editQueue']",
+  },
+  overallQueueLength: {
+    fieldType: fieldTypes.text,
+    domSelector: "[id$='editOverallQueueLength']",
   },
   saveButton: {
-    domSelector: "#j_id0:theForm:thePageBlock:j_id5:save",
+    domSelector: "[id$='save']",
   },
 };

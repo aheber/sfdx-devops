@@ -30,6 +30,8 @@ export default class Button extends SfdxCommand {
 
   public static args = [];
 
+  private browser;
+
   protected static flagsConfig = {
     buttons: flags.string({
       char: "b",
@@ -59,6 +61,7 @@ export default class Button extends SfdxCommand {
     const username = this.org.getUsername();
 
     const [browser, page] = await getBrowser(username);
+    this.browser = browser;
     // Workaround for not being able to manage Site.OptionsAllowGuestSupportApi via Metadata
     // https://success.salesforce.com/ideaView?id=0873A000000CYQzQAO
 
@@ -68,23 +71,17 @@ export default class Button extends SfdxCommand {
       o[(v as any).DeveloperName] = v;
       return o;
     }, {});
-    console.log("Buttons ", buttons);
-
-    console.log(buttonDirectories);
     const filesToProcess = await globby(buttonDirectories);
     let buttonApiData = this.getButtonAPIMap(filesToProcess);
-    console.log(buttonApiData);
 
     // if flags are set, parse and filter buttons to load
     if (this.flags.buttons) {
       const buttonNames = this.flags.buttons.split(/ *, */);
-      console.log(buttonNames);
       buttonApiData = buttonApiData.filter(
         (b) => buttonNames.indexOf(b[0]) >= 0
       );
     }
 
-    console.log("Button Data to run:", buttonApiData);
     const parser = new Parser();
 
     for (const b of buttonApiData) {
@@ -120,8 +117,14 @@ export default class Button extends SfdxCommand {
       );
       // Apply XML to page
       for (const key of Object.keys(fieldData)) {
-        console.log("Key:", key);
-        console.log("Value:", xmlData.LiveChatButton[key]);
+        try {
+          await page.waitForSelector(
+            escapeElementId(fieldData[key].domSelector),
+            { timeout: 100, visible: true }
+          );
+        } catch (error) {
+          continue;
+        }
         if (xmlData.LiveChatButton[key]) {
           // Text
           if (fieldData[key].fieldType === fieldTypes.text) {
@@ -132,6 +135,21 @@ export default class Button extends SfdxCommand {
             );
           }
           // Checkbox
+          if (fieldData[key].fieldType === fieldTypes.checkbox) {
+            const checkbox = await page.$(
+              escapeElementId(fieldData[key].domSelector)
+            );
+            const expectedState = xmlData.LiveChatButton[key][0] === "true";
+
+            const checkedState = await (
+              await checkbox.getProperty("checked")
+            ).jsonValue();
+
+            // eslint-disable-next-line max-depth
+            if (checkedState !== expectedState) {
+              await page.click(escapeElementId(fieldData[key].domSelector));
+            }
+          }
 
           // Picklist
           if (fieldData[key].fieldType === fieldTypes.picklist) {
@@ -150,27 +168,37 @@ export default class Button extends SfdxCommand {
           page.click(escapeElementId(fieldData.saveButton.domSelector)),
           page.waitForNavigation({ waitUntil: "networkidle0" }),
         ]);
-      } catch (e) {
+
+        const url = page.mainFrame().url();
+        if (url.indexOf("editLiveChatButton.apexp") >= 0) {
+          throw new Error("Page stayed on edit panel, save failure: " + url);
+        }
+      } catch (error) {
         // error when routing to the save page, report on the save errors
         let document;
         if (document) {
           console.log("fake it for now");
         }
-        // let workflowName = await frame.evaluate(() => {return document.querySelector("#workflowUserId").value});
-        // console.log('Browser: ERROR: Saving Default Workflow User failed');
-        // console.log('Browser: Content of workflow user field:',workflowName);
         await page.waitForSelector(".errorMsg", { timeout: 10 * 1000 });
         const content = await page.evaluate(() => {
           const errors = [...document.querySelectorAll(".errorMsg")];
-          return errors.map((div) => div.textContent.trim());
+          return errors
+            .map((div) => div.textContent.trim())
+            .filter((text) => text.length > 0);
         });
-        console.log("Browser: errors found:", content);
-        url = page.mainFrame().url();
-        console.log("Browser: Main page URL:", url);
+        console.error("Browser: errors found:", content);
+        throw error;
       }
     }
 
-    await browser.close();
+    await this.browser.close();
+  }
+
+  async catch(error) {
+    if (this.browser) {
+      await this.browser.close();
+    }
+    super.catch(error);
   }
 
   async getSiteURL(siteName) {
