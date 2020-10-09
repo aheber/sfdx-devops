@@ -7,7 +7,7 @@ import { compareAsync } from "./compare-async-handler";
 import { getMetadataInfo } from "./metadata-info";
 
 const bundleTypes = ["AuraDefinitionBundle", "LightningComponentBundle"];
-const fullPathTypes = ["EmailTemplate"];
+const fullPathTypes = ["EmailTemplate", "Document", "Dashboard", "Report"];
 let metadataInfo;
 
 // eslint-disable-next-line max-params
@@ -17,7 +17,7 @@ async function buildOutput(fileDiffs, outputPath, path1, path2, packageXML) {
     const metadataType = metadataInfo[key];
     const packageType = {
       name: [metadataType.metadataName],
-      members: []
+      members: [],
     };
     await fs.ensureDir(outputPath + "/" + key);
     for (const fileName of fileDiffs[key]) {
@@ -78,15 +78,8 @@ async function processEqualState(
   metadataTypeDir,
   fileDiffs
 ) {
-  // if (name.indexOf("doEvent__c.workflow") >= 0) {
-  //   console.log(
-  //     "Compare Change - name1: %s, type1: %s, name2: %s, type2: %s, state: %s",
-  //     entry.name1,
-  //     entry.type1,
-  //     entry.name2,
-  //     entry.type2,
-  //     entry.state
-  //   );
+  // if (name.indexOf("TestDoc1") >= 0) {
+  //   console.log(entry);
   // }
   if (
     entry.type1 === "missing" &&
@@ -152,17 +145,17 @@ export default async function doIt({
   path1,
   path2,
   outputPath,
-  blockedTypes
+  blockedTypes,
 }) {
   metadataInfo = await getMetadataInfo();
   const packageXML = {
     Package: {
       $: {
-        xmlns: "http://soap.sforce.com/2006/04/metadata"
+        xmlns: "http://soap.sforce.com/2006/04/metadata",
       },
       types: [],
-      version: []
-    }
+      version: [],
+    },
   };
   packageXML.Package.version = apiVersion;
 
@@ -174,7 +167,7 @@ export default async function doIt({
     excludeFilter:
       "package.xml,et4ae5__*,*.profile,standard__*.app,Quick_Link*.md,layouts,certs,datacategorygroups,emailservices,reportTypes,Case.settings,Knowledge.settings,OrgPreference.settings",
     paths: [path1, path2],
-    metadataInfo
+    metadataInfo,
   };
 
   const res = await dircompare.compare(path1, path2, options);
@@ -222,7 +215,7 @@ export default async function doIt({
 
   // build package.xml
   const builder = new Builder({
-    xmldec: { version: "1.0", encoding: "UTF-8" }
+    xmldec: { version: "1.0", encoding: "UTF-8" },
   });
   const xml = builder.buildObject(packageXML);
   await fs.writeFile(outputPath + "/package.xml", xml);

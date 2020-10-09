@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+  <types>
+    <name>Document</name>
+    <members>FolderExisting/TestDoc3.txt</members>
+    <members>FolderExisting/TestDoc4.txt</members>
+    <members>FolderNew/TestDoc1.txt</members>
+    <members>FolderNew/TestDoc2.txt</members>
+    <members>FolderNew</members>
+  </types>
+  <version>47.0</version>
+</Package>

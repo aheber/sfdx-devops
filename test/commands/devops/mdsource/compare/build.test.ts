@@ -25,12 +25,12 @@ describe("devops:mdsource:compare:build", () => {
   });
 
   readdirSync("./test/commands/devops/mdsource/compare/force-apps", {
-    withFileTypes: true
+    withFileTypes: true,
   })
-    .filter(dirent => dirent.isDirectory())
-    .forEach(async dirent => {
+    .filter((dirent) => dirent.isDirectory())
+    .forEach(async (dirent) => {
       const dirName = dirent.name;
-      // if (dirName !== "testCustomObject") {
+      // if (dirName !== "testDocument") {
       //   return;
       // }
       test
@@ -42,7 +42,7 @@ describe("devops:mdsource:compare:build", () => {
           "--changeddir",
           `./test/commands/devops/mdsource/compare/force-apps/${dirName}/orgmdt`,
           "--outputdir",
-          `./test/commands/devops/mdsource/compare/force-apps/${dirName}/output`
+          `./test/commands/devops/mdsource/compare/force-apps/${dirName}/output`,
         ])
         .it(
           `runs devops:mdsource:compare:build --basedir ./test/commands/devops/mdsource/compare/force-apps/${dirName}/srcmdt --changeddir ./test/commands/devops/mdsource/compare/force-apps/${dirName}/orgmdt --outputdir ./test/commands/devops/mdsource/compare/force-apps/${dirName}/output`,

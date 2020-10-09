@@ -15,6 +15,9 @@ export async function getMetadataInfo() {
   const infoByDir = {};
   // eslint-disable-next-line guard-for-in
   for (const type in info.typeDefs) {
+    if (!info.typeDefs[type].isAddressable) {
+      continue;
+    }
     // infoByDir[info.typeDefs[type].defaultDirectory] = info.typeDefs[type];
     const dir = info.typeDefs[type].defaultDirectory;
     infoByDir[dir] = info.typeDefs[type];
@@ -24,7 +27,7 @@ export async function getMetadataInfo() {
       if (customFilesHandlers[dir]) {
         // eslint-disable-next-line no-await-in-loop
         infoByDir[dir].mdtHandler = await import(`./typeHandlers/${dir}`).then(
-          l => {
+          (l) => {
             // eslint-disable-next-line new-cap
             return new l.default();
           }

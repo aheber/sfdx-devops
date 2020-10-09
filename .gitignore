@@ -8,3 +8,4 @@
 node_modules
 /test/**/force-apps/*/output
 test/commands/devops/mdsource/compare/force-apps/base
+.sfdx
