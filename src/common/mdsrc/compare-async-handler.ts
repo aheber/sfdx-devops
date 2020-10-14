@@ -21,7 +21,7 @@ export async function compareAsync(p1, stat1, p2, stat2, options) {
   let bufferPair;
 
   if (!metadataInfo) {
-    await getMetadataInfo().then(res => {
+    await getMetadataInfo().then((res) => {
       metadataInfo = res;
     });
   }
@@ -39,7 +39,7 @@ export async function compareAsync(p1, stat1, p2, stat2, options) {
   };
 
   // remove white spaces except line endings
-  const removeWhiteSpace = s => {
+  const removeWhiteSpace = (s) => {
     return s.replace(
       /  +|[\f\t\v\r\n\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/g,
       ""
@@ -47,7 +47,7 @@ export async function compareAsync(p1, stat1, p2, stat2, options) {
   };
 
   const endsWithAny = (s, suffixes) => {
-    return suffixes.some(suffix => {
+    return suffixes.some((suffix) => {
       return s.endsWith(suffix);
     });
   };
@@ -69,7 +69,10 @@ export async function compareAsync(p1, stat1, p2, stat2, options) {
 
   // If we have a type-specific handler available, use it to compare
   //   console.log(metadataFolder, metadataInfo[metadataFolder]);
-  if (metadataInfo[metadataFolder].mdtHandler !== undefined) {
+  if (
+    metadataInfo[metadataFolder] &&
+    metadataInfo[metadataFolder].mdtHandler !== undefined
+  ) {
     return metadataInfo[metadataFolder].mdtHandler.compare(p1, p2);
   }
   // Smart-compare XML files instead of byte-compare
@@ -82,9 +85,9 @@ export async function compareAsync(p1, stat1, p2, stat2, options) {
   // TODO: optimize this to correctly manage binary files again where appropriate
   return Promise.all([
     fdQueue.promises.open(p1, "r"),
-    fdQueue.promises.open(p2, "r")
+    fdQueue.promises.open(p2, "r"),
   ])
-    .then(fds => {
+    .then((fds) => {
       bufferPair = bufferPool.allocateBuffers();
       fd1 = fds[0];
       fd2 = fds[1];
@@ -93,8 +96,8 @@ export async function compareAsync(p1, stat1, p2, stat2, options) {
       const compareAsyncInternal = () => {
         return Promise.all([
           fsPromise.read(fd1, buf1, 0, BUF_SIZE, null),
-          fsPromise.read(fd2, buf2, 0, BUF_SIZE, null)
-        ]).then(bufferSizes => {
+          fsPromise.read(fd2, buf2, 0, BUF_SIZE, null),
+        ]).then((bufferSizes) => {
           const size1 = bufferSizes[0];
           const size2 = bufferSizes[1];
           // running the risk of clearing whitespace causing different byte read sequence
