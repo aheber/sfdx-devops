@@ -1,7 +1,7 @@
 {
   "name": "sfdx-devops",
   "description": "SFDX plugin for DevOps actions related to Salesforce Development",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "author": "Anthony Heber @aheber",
   "bugs": "https://github.com/aheber/sfdx-devops/issues",
   "dependencies": {

@@ -135,7 +135,12 @@ async function processEqualState(
       // This component has been marked for deletion, do not add to changed components
       return;
     }
-    name = pathParts[0];
+    // If the file is part of a bundle but is a surface level file, just drop the file type
+    if (pathParts[0]) {
+      name = pathParts[0];
+    } else {
+      name = name.replace(/\..*/, "");
+    }
   }
   if (fullPathTypes.indexOf(metadataType.metadataName) >= 0) {
     pathParts.push(name);
