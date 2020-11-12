@@ -6,7 +6,12 @@ import { Builder } from "xml2js";
 import { compareAsync } from "./compare-async-handler";
 import { getMetadataInfo } from "./metadata-info";
 
-const bundleTypes = ["AuraDefinitionBundle", "LightningComponentBundle"];
+const bundleTypes = [
+  "AuraDefinitionBundle",
+  "LightningComponentBundle",
+  "ExperienceBundle",
+];
+const explodedTypes = { ExperienceBundle: "site" };
 const fullPathTypes = ["EmailTemplate", "Document", "Dashboard", "Report"];
 let metadataInfo;
 
@@ -20,7 +25,7 @@ async function buildOutput(fileDiffs, outputPath, path1, path2, packageXML) {
       members: [],
     };
     await fs.ensureDir(outputPath + "/" + key);
-    for (const fileName of fileDiffs[key]) {
+    for (let fileName of fileDiffs[key]) {
       packageType.members.push(
         fileName.replace(new RegExp(`.${metadataType.ext}$`), "")
       );
@@ -52,8 +57,14 @@ async function buildOutput(fileDiffs, outputPath, path1, path2, packageXML) {
       }
       if (
         metadataType.hasContent &&
-        bundleTypes.indexOf(metadataType.metadataName) < 0
+        (explodedTypes[metadataType.metadataName] ||
+          bundleTypes.indexOf(metadataType.metadataName) < 0)
       ) {
+        // console.log("\t", fileName + "-meta.xml");
+        if (explodedTypes[metadataType.metadataName]) {
+          // get the related xml if we're pushing the entire directory
+          fileName = fileName + "." + explodedTypes[metadataType.metadataName];
+        }
         try {
           await fs.copy(
             path1 + "/" + key + "/" + fileName + "-meta.xml",
