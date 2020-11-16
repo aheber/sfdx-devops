@@ -19,7 +19,7 @@ export async function getBrowser(targetUsername) {
     (process.env.SFDX_DEVOPS_DISPLAYBROWSER || "false").toLowerCase() ===
     "true";
   const browser = await puppeteer.launch({
-    headless: shouldHeadless,
+    headless: !shouldHeadless,
     args: ["--no-sandbox"],
   });
   const page = (await browser.pages())[0];
