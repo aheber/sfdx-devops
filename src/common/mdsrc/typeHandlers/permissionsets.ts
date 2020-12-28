@@ -5,6 +5,9 @@ export default class PermissionSetsDiff extends MetadataDiff {
     return "PermissionSet";
   }
 
+  // Don't build partial perm-sets, always deliver the source version
+  buildOutput = undefined;
+
   getSubComponentNameKey() {
     return {
       applicationVisibilities: "application",
@@ -18,7 +21,7 @@ export default class PermissionSetsDiff extends MetadataDiff {
       pageAccesses: "apexPage",
       recordTypeVisibilities: "recordType",
       tabSettings: "tab",
-      userPermissions: "name"
+      userPermissions: "name",
     };
   }
 }
