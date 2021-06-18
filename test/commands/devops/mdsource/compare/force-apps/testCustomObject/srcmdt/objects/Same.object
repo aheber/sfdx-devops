@@ -86,6 +86,11 @@
     </searchLayouts>
     <fields>
         <fullName>Same__c</fullName>
+        <description>Should be the same, 
+even through newlines
+        </description>
+        <formula>formula should correctly continue 
+through newlines </formula>
         <externalId>false</externalId>
         <label>Absolute Depth</label>
         <precision>18</precision>
@@ -95,6 +100,25 @@
         <trackHistory>false</trackHistory>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Same_Picklist__c</fullName>
+        <externalId>false</externalId>
+        <label>Same Picklist</label>
+        <required>false</required>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Value 1</fullName>
+                    <default>false</default>
+                    <label>Value 1</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>1</visibleLines>
     </fields>
     <fields>
         <fullName>New__c</fullName>
