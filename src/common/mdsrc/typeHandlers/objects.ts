@@ -11,7 +11,8 @@ export default class CustomObjectDiff extends MetadataDiff {
     this.normalizeFieldNewLines(xmls[0]);
     this.normalizeFieldNewLines(xmls[1]);
     // remove inactive picklists from the target dataset
-    this.stripInactivePicklistEntries(xmls[1]);
+    this.stripInactivePicklistEntriesFromOrg(xmls);
+
     // const changes = {} as any;
     // part out into core properties and sub-objects, handle special-case sub-objects
     const pieces1 = super.breakObjectIntoParts(xmls[0]);
@@ -64,13 +65,31 @@ export default class CustomObjectDiff extends MetadataDiff {
     }
   }
 
-  stripInactivePicklistEntries(mdt) {
-    if (mdt.CustomObject.fields) {
-      mdt.CustomObject.fields.forEach((f) => {
+  stripInactivePicklistEntriesFromOrg(mdtList) {
+    // collect the API names from the src list, cross-eliminate any inactive in the org list
+    const inactiveSrcSet = new Set();
+    if (mdtList[0].CustomObject.fields) {
+      mdtList[0].CustomObject.fields.forEach((f) => {
+        if (f.valueSet && f.valueSet[0].valueSetDefinition) {
+          f.valueSet[0].valueSetDefinition[0].value.forEach((v) => {
+            if (v.isActive && v.isActive[0] === "false") {
+              inactiveSrcSet.add(v.fullName[0]);
+            }
+          });
+        }
+      });
+    }
+    if (mdtList[1].CustomObject.fields) {
+      mdtList[1].CustomObject.fields.forEach((f) => {
         if (f.valueSet && f.valueSet[0].valueSetDefinition) {
           f.valueSet[0].valueSetDefinition[0].value = f.valueSet[0].valueSetDefinition[0].value.filter(
             (v) => {
-              if (v.isActive && v.isActive[0] === "false") {
+              // if picklist value is inactive but wasn't found in the src list, filter it out
+              if (
+                v.isActive &&
+                v.isActive[0] === "false" &&
+                !inactiveSrcSet.has(v.fullName[0])
+              ) {
                 return false;
               }
               return true;
