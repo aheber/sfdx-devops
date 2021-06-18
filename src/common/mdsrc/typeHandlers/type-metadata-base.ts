@@ -20,7 +20,7 @@ export default abstract class MetadataDiff extends TypeDiffXml {
     // console.log("Building Output for objects", p1, p2);
     const changes = await this.getChanges(p1, p2);
     const builder = new Builder({
-      xmldec: { version: "1.0", encoding: "UTF-8" }
+      xmldec: { version: "1.0", encoding: "UTF-8" },
     });
     return builder.buildObject(changes);
   }
@@ -50,7 +50,7 @@ export default abstract class MetadataDiff extends TypeDiffXml {
   protected breakObjectIntoParts(xml) {
     const data = {
       core: {} as { [key: string]: any },
-      components: {} as { [key: string]: any }
+      components: {} as { [key: string]: any },
     };
     // look through each key inside the core object
     // console.log(xml);

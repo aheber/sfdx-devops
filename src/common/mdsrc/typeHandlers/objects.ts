@@ -20,7 +20,6 @@ export default class CustomObjectDiff extends MetadataDiff {
       pieces1.components,
       pieces2.components
     );
-    // console.log("Changes", JSON.stringify(changes, null, 2));
 
     if (
       Object.keys(changes.CustomObject).length > 0 ||
@@ -53,30 +52,33 @@ export default class CustomObjectDiff extends MetadataDiff {
   }
 
   normalizeFieldNewLines(mdt) {
-    mdt.CustomObject.fields.forEach((f) => {
-      if (f.description) {
-        f.description = this.cleanNewlineChars(f.description);
-      }
-      if (f.formula) {
-        f.formula = this.cleanNewlineChars(f.formula);
-      }
-    });
+    if (mdt.CustomObject.fields) {
+      mdt.CustomObject.fields.forEach((f) => {
+        if (f.description) {
+          f.description = this.cleanNewlineChars(f.description);
+        }
+        if (f.formula) {
+          f.formula = this.cleanNewlineChars(f.formula);
+        }
+      });
+    }
   }
 
   stripInactivePicklistEntries(mdt) {
-    mdt.CustomObject.fields.forEach((f) => {
-      if (f.valueSet) {
-        console.log(JSON.stringify(f, null, 2));
-        f.valueSet[0].valueSetDefinition[0].value = f.valueSet[0].valueSetDefinition[0].value.filter(
-          (v) => {
-            if (v.isActive && v.isActive[0] === "false") {
-              return false;
+    if (mdt.CustomObject.fields) {
+      mdt.CustomObject.fields.forEach((f) => {
+        if (f.valueSet && f.valueSet[0].valueSetDefinition) {
+          f.valueSet[0].valueSetDefinition[0].value = f.valueSet[0].valueSetDefinition[0].value.filter(
+            (v) => {
+              if (v.isActive && v.isActive[0] === "false") {
+                return false;
+              }
+              return true;
             }
-            return true;
-          }
-        );
-      }
-    });
+          );
+        }
+      });
+    }
   }
 
   cleanNewlineChars(textArray) {
