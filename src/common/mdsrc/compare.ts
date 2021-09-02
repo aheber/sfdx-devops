@@ -180,8 +180,7 @@ export default async function doIt({
     compareFileAsync: compareAsync,
     ignoreLineEnding: true,
     ignoreWhiteSpaces: true,
-    excludeFilter:
-      "package.xml,et4ae5__*,*.profile,standard__*.app,Quick_Link*.md,layouts,certs,datacategorygroups,emailservices,reportTypes,Case.settings,Knowledge.settings,OrgPreference.settings",
+    excludeFilter: "package.xml",
     paths: [path1, path2],
     metadataInfo,
   };
