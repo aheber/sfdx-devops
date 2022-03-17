@@ -1,7 +1,7 @@
 {
   "name": "sfdx-devops",
   "description": "SFDX plugin for DevOps actions related to Salesforce Development",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "author": "Anthony Heber @aheber",
   "bugs": "https://github.com/aheber/sfdx-devops/issues",
   "dependencies": {
@@ -22,6 +22,7 @@
     "js-yaml": "^3.13.1",
     "puppeteer": "^5.0.0",
     "salesforce-alm": "^48.20.0",
+    "sort-any": "^4.0.0",
     "tslib": "^2.0.0",
     "xml2js": "^0.4.23"
   },

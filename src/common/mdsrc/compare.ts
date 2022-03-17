@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import * as dircompare from "dir-compare";
 import * as fs from "fs-extra";
+import * as path from "path";
 import { format } from "util";
 import { Builder } from "xml2js";
 import { compareAsync } from "./compare-async-handler";
@@ -15,20 +16,57 @@ const explodedTypes = { ExperienceBundle: "site" };
 const fullPathTypes = ["EmailTemplate", "Document", "Dashboard", "Report"];
 let metadataInfo;
 
+function addToPackage(packageXml, type, member) {
+  let packageType = packageXml.Package.types.find((p) => p.name[0] === type);
+  if (!packageType) {
+    packageType = {
+      name: [type],
+      members: [],
+    };
+    packageXml.Package.types.push(packageType);
+  }
+  if (!packageType.members.includes(member)) {
+    packageType.members.push(member);
+  }
+}
+
 // eslint-disable-next-line max-params
 async function buildOutput(fileDiffs, outputPath, path1, path2, packageXML) {
   // eslint-disable-next-line guard-for-in
   for (const key in fileDiffs) {
     const metadataType = metadataInfo[key];
-    const packageType = {
-      name: [metadataType.metadataName],
-      members: [],
-    };
+
     await fs.ensureDir(outputPath + "/" + key);
     for (let fileName of fileDiffs[key]) {
-      packageType.members.push(
+      addToPackage(
+        packageXML,
+        metadataType.metadataName,
         fileName.replace(new RegExp(`.${metadataType.ext}$`), "")
       );
+
+      if (metadataType.mdtHandler && metadataType.mdtHandler.addToPackageXml) {
+        const newMembers = await metadataType.mdtHandler.addToPackageXml(
+          path1 + "/" + key + "/" + fileName
+        );
+        // eslint-disable-next-line guard-for-in
+        for (const type in newMembers) {
+          // eslint-disable-next-line max-depth
+          for (const member of newMembers[type]) {
+            addToPackage(packageXML, type, member);
+          }
+        }
+      }
+
+      if (metadataType.mdtHandler && metadataType.mdtHandler.addFiles) {
+        const extraFiles = await metadataType.mdtHandler.addFiles(
+          path1 + "/" + key + "/" + fileName
+        );
+        for (const file of extraFiles) {
+          // probably need to find the right path
+          await fs.ensureDir(path.dirname(outputPath + "/" + file.path));
+          await fs.writeFile(outputPath + "/" + file.path, file.content);
+        }
+      }
       if (metadataType.mdtHandler && metadataType.mdtHandler.buildOutput) {
         // if filename only exists in src then copy holesale?
         // if both exist then
@@ -75,7 +113,6 @@ async function buildOutput(fileDiffs, outputPath, path1, path2, packageXML) {
         }
       }
     }
-    packageXML.Package.types.push(packageType);
   }
 }
 

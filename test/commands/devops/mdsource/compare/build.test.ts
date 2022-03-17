@@ -17,6 +17,10 @@ import { compareDirectories, print } from "../../../../utils/compare-dirs";
 // It needs a srcmdt and orgmdt and is expected to create an output folder
 // with any items that srcmdt has that orgmdt does not, the output folder is compared to the expected folder
 // if output matches expected then the job succeeds, otherwise the job fails
+const testFilters = (process.env.TEST_NAMES || "")
+  .split(",")
+  .filter((n) => n.length > 0);
+
 describe("devops:mdsource:compare:build", () => {
   before(async () => {
     await rimraf(
@@ -28,11 +32,11 @@ describe("devops:mdsource:compare:build", () => {
     withFileTypes: true,
   })
     .filter((dirent) => dirent.isDirectory())
+    .filter(
+      (dirent) => testFilters.length === 0 || testFilters.includes(dirent.name)
+    )
     .forEach(async (dirent) => {
       const dirName = dirent.name;
-      // if (dirName !== "testDocument") {
-      //   return;
-      // }
       test
         .withProject({ sourceApiVersion: "47.0" })
         .command([
