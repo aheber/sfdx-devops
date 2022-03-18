@@ -1,4 +1,5 @@
 import TypeDiffXml from "./typeHandlers/type-diff-xml";
+import TypeDiffJson from "./typeHandlers/type-diff-json";
 import { closeFilesAsync } from "../fileCompareHandler/fileCompareHandler/close-file";
 import { BufferPool as buffPool } from "../fileCompareHandler/fs/buffer-pool";
 import { FileDescriptorQueue as fileDescriptorQueue } from "../fileCompareHandler/fs/file-descriptor-queue";
@@ -46,44 +47,27 @@ export async function compareAsync(p1, stat1, p2, stat2, options) {
     );
   };
 
-  const endsWithAny = (s, suffixes) => {
-    return suffixes.some((suffix) => {
-      return s.endsWith(suffix);
-    });
-  };
-
   const metadataFolder = getMetadataFolder(p1, options.paths[0]);
 
-  // try to load a type-specific handler once, if it fails it will be stamped as "false"
-  // if (perTypeHandlers[metadataFolder] === undefined) {
-  //   try {
-  //     perTypeHandlers[metadataFolder] = await import(
-  //       `./typeHandlers/${metadataFolder}`
-  //     ).then(l => {
-  //       return new l.default();
-  //     });
-  //   } catch (err) {
-  //     perTypeHandlers[metadataFolder] = false;
-  //   }
-  // }
-
   // If we have a type-specific handler available, use it to compare
-  //   console.log(metadataFolder, metadataInfo[metadataFolder]);
   if (
     metadataInfo[metadataFolder] &&
     metadataInfo[metadataFolder].mdtHandler !== undefined
   ) {
     return metadataInfo[metadataFolder].mdtHandler.compare(p1, p2);
   }
-  // Smart-compare XML files instead of byte-compare
-  // Helps with attribute ordering other small changes
-  if (endsWithAny(p1, [".xml"])) {
-    return new TypeDiffXml().compare(p1, p2);
+
+  function compareBuffers(
+    buf1: Buffer,
+    buf2: Buffer,
+    contentSize: number
+  ): boolean {
+    return buf1.slice(0, contentSize).equals(buf2.slice(0, contentSize));
   }
 
   // Finally give up and perform generally optimized string comparisons
   // TODO: optimize this to correctly manage binary files again where appropriate
-  return Promise.all([
+  const match = await Promise.all([
     fdQueue.promises.open(p1, "r"),
     fdQueue.promises.open(p2, "r"),
   ])
@@ -95,18 +79,22 @@ export async function compareAsync(p1, stat1, p2, stat2, options) {
       const buf2 = bufferPair.buf2;
       const compareAsyncInternal = () => {
         return Promise.all([
-          fsPromise.read(fd1, buf1, 0, BUF_SIZE, null),
-          fsPromise.read(fd2, buf2, 0, BUF_SIZE, null),
+          fsPromise.read(fd1, buf1, 0, BUF_SIZE, null) as Promise<number>,
+          fsPromise.read(fd2, buf2, 0, BUF_SIZE, null) as Promise<number>,
         ]).then((bufferSizes) => {
           const size1 = bufferSizes[0];
           const size2 = bufferSizes[1];
+          if (size1 === 0 && size2 === 0) {
+            return true;
+          }
+          if (compareBuffers(buf1, buf2, size1)) {
+            // content is the same, moving on
+            return compareAsyncInternal();
+          }
           // running the risk of clearing whitespace causing different byte read sequence
           // TODO: need to carry a partial forward to subsequent reads
           const chunk1 = removeWhiteSpace(buf1.toString("utf8", 0, size1));
           const chunk2 = removeWhiteSpace(buf2.toString("utf8", 0, size2));
-          if (size1 === 0 && size2 === 0) {
-            return true;
-          }
           if (chunk1 !== chunk2) {
             return false;
           }
@@ -119,4 +107,16 @@ export async function compareAsync(p1, stat1, p2, stat2, options) {
       closeFilesAsync(fd1, fd2, fdQueue);
       bufferPool.freeBuffers(bufferPair);
     });
+
+  if (!match) {
+    // Smart-compare XML files instead of byte-compare
+    // Helps with attribute ordering other small changes
+    if (p1.endsWith(".xml")) {
+      return new TypeDiffXml().compare(p1, p2);
+    }
+    if (p1.endsWith(".json")) {
+      return new TypeDiffJson().compare(p1, p2);
+    }
+  }
+  return match;
 }

@@ -1,0 +1,10 @@
+{
+  "activeViewId": "141402b9-82ad-499a-9941-55901f0df3fd",
+  "appPageId": "fa9d6288-1e4d-4829-89d6-c53e3eaf7720",
+  "id": "9320a28c-fff7-4f7d-9d27-825ca47821c5",
+  "label": "Route1",
+  "pageAccess": "UseParent",
+  "routeType": "custom-route-1",
+  "type": "route",
+  "urlPrefix": "route1-new"
+}

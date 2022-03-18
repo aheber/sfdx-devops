@@ -1,0 +1,39 @@
+{
+  "activeBrandingSetId": "5f83b329-d1f5-493c-b4f8-a4e1042b53ba",
+  "customCSS": "body {\n\toverflow-x: hidden;\n\toverflow-y: scroll;\n}",
+  "developerName": "starter",
+  "id": "f7a54536-ea3b-4239-9ded-085f09a199eb",
+  "label": "Build Your Own",
+  "layouts": {
+    "Inner": "286dccc3-58bb-47be-8010-2a5943ae632e",
+    "Login": "6c896498-a1c0-4c09-876c-acc7372045f1",
+    "ServiceNotAvailable": "69f52fdf-18ac-4e44-a170-a05972fe034b"
+  },
+  "type": "theme",
+  "views": [
+    {
+      "componentAttributes": {},
+      "componentName": "salesforceIdentity:loginBody2",
+      "id": "6c896498-a1c0-4c09-876c-acc7372045f1",
+      "label": "Login",
+      "regions": [
+        {
+          "id": "2ca709bb-a1c3-4de1-a226-8fcd54cda07b",
+          "regionName": "header",
+          "type": "region"
+        },
+        {
+          "id": "cbe64efc-b759-4da4-937d-e55995676f23",
+          "regionName": "content",
+          "type": "region"
+        },
+        {
+          "id": "49ff5fdd-e2ca-4cdd-85cb-0b744cc92f90",
+          "regionName": "footer",
+          "type": "region"
+        }
+      ],
+      "type": "view"
+    }
+  ]
+}

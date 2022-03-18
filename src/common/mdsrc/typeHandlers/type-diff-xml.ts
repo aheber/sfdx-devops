@@ -18,9 +18,9 @@ export default class TypeDiffXml extends TypeBase {
     const parser = new Parser();
     let out;
     try {
-      out = await Promise.all(datas.map(d => parser.parseStringPromise(d)));
+      out = await Promise.all(datas.map((d) => parser.parseStringPromise(d)));
     } catch (error) {
-      console.error(error);
+      throw new Error("Error parsing XML");
     }
     return out;
   }

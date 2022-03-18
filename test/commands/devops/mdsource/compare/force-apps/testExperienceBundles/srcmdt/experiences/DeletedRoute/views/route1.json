@@ -1,0 +1,26 @@
+{
+  "appPageId": "fa9d6288-1e4d-4829-89d6-c53e3eaf7720",
+  "componentName": "c:Layout1",
+  "id": "141402b9-82ad-499a-9941-55901f0df3fd",
+  "label": "Apply",
+  "regions": [
+    {
+      "components": [
+        {
+          "componentAttributes": {},
+          "componentName": "c:Component1",
+          "id": "dd9fefd0-bff2-4aa1-9419-9b82052acd58",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        }
+      ],
+      "id": "3254205d-7316-4369-8763-6a5d4cc86ed7",
+      "regionName": "content",
+      "type": "region"
+    }
+  ],
+  "themeLayoutType": "Inner",
+  "type": "view",
+  "viewType": "custom-apply"
+}
