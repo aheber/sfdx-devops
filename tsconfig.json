@@ -1,6 +1,7 @@
 {
   "extends": "./node_modules/@salesforce/dev-config/tsconfig",
   "compilerOptions": {
+    "skipLibCheck": true,
     "outDir": "./lib",
     "rootDir": "./src"
   },

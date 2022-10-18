@@ -33,7 +33,7 @@ export function FileDescriptorQueue(maxFilesNo) {
     pendingJobs.enqueue({
       path: path,
       flags: flags,
-      callback: callback
+      callback: callback,
     });
     process();
   };
@@ -58,7 +58,7 @@ export function FileDescriptorQueue(maxFilesNo) {
     },
 
     close: function(fd) {
-      return new Promise(function(resolve, reject) {
+      return new Promise<void>(function(resolve, reject) {
         close(fd, function(err) {
           if (err) {
             reject(err);
@@ -67,12 +67,12 @@ export function FileDescriptorQueue(maxFilesNo) {
           }
         });
       });
-    }
+    },
   };
 
   return {
     open: open,
     close: close,
-    promises: promises
+    promises: promises,
   };
 }

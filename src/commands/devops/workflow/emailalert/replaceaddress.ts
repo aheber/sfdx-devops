@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { flags, SfdxCommand } from "@salesforce/command";
-import { fs, Messages } from "@salesforce/core";
+import * as fs from "fs-extra";
+import { Messages } from "@salesforce/core";
 import { JsonMap } from "@salesforce/ts-types";
 import { readFileSync } from "fs-extra";
 import * as globby from "globby";
@@ -24,7 +25,7 @@ export default class ReplaceAddress extends SfdxCommand {
 
   public static examples = [
     `$ sfdx devops:workflow:emailalert:replaceaddress --configfile config/alertconfig.yaml
-  `
+  `,
   ];
 
   public static args = [];
@@ -34,8 +35,8 @@ export default class ReplaceAddress extends SfdxCommand {
       char: "c",
       required: true,
       description: messages.getMessage("configfileFlagDescription"),
-      default: "config/alertconfig.yaml"
-    })
+      default: "config/alertconfig.yaml",
+    }),
   };
 
   // Comment this out if your command does not require an org username
@@ -50,19 +51,19 @@ export default class ReplaceAddress extends SfdxCommand {
   public async run(): Promise<JsonMap> {
     // read in the YAML config file
     // TODO: error handling
-    const settings = yaml.safeLoad(readFileSync(this.flags.configfile, "utf8"));
+    const settings = yaml.load(readFileSync(this.flags.configfile, "utf8"));
     // build a list of filenames that we're looking for
     const targetFiles = Object.keys(settings).map(
-      k => `${k}.workflow-meta.xml`
+      (k) => `${k}.workflow-meta.xml`
     );
     // read in the project json to get the source paths
     const projectJson = await this.project.resolveProjectConfig();
     const paths = (projectJson.packageDirectories as JsonMap[]).map(
-      p => p.path as string
+      (p) => p.path as string
     );
     // Transform the workflow's email alerts by name as properties in the YAML config
     const filesToProcess = await globby(paths, {
-      expandDirectories: targetFiles
+      expandDirectories: targetFiles,
     });
     // read in each XML file in filesToProcess
     // access the alerts object and find the element with the correct name, perform the replacement, rewrite the file in place
@@ -83,7 +84,7 @@ export default class ReplaceAddress extends SfdxCommand {
           break;
         }
         const alrt = wfDoc.Workflow.alerts.find(
-          a => a.fullName.indexOf(alertName) >= 0
+          (a) => a.fullName.indexOf(alertName) >= 0
         );
         // set the email alert correctly, special handling for generic types rather than named orgwide email addresses
         if (genericEmailTypes.indexOf(targetEmailName) >= 0) {
@@ -95,7 +96,7 @@ export default class ReplaceAddress extends SfdxCommand {
         }
         const builder = new Builder({
           xmldec: { version: "1.0", encoding: "UTF-8" },
-          renderOpts: { pretty: true, indent: "    " }
+          renderOpts: { pretty: true, indent: "    " },
         });
         const xmlOut = builder.buildObject(wfDoc);
         await fs.writeFile(f, xmlOut);

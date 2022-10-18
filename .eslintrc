@@ -1,6 +1,10 @@
 {
   "extends": ["oclif", "oclif-typescript", "prettier"],
-  "ignorePatterns": ["lib", "node_modules"],
+  "ignorePatterns": [
+    "lib",
+    "node_modules",
+    "test/commands/devops/mdsource/compare/force-apps"
+  ],
   "rules": {
     "semi": ["error", "always"],
     "quotes": ["error", "double"]

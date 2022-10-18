@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 const puppeteer = require("puppeteer");
 const URL = require("url").URL;
-import { OrgOpenCommand } from "salesforce-alm/dist/commands/force/org/open";
+import { OrgOpenCommand } from "@salesforce/plugin-org/lib/commands/force/org/open";
 
 const pageDefaultTimeoutSeconds = 120;
 

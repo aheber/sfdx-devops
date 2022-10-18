@@ -214,9 +214,9 @@ export default class Button extends SfdxCommand {
       timeout: 20 * 1000,
     });
     const checkedState = await (
-      await (await page.$(escapeElementId(guestApiSelector))).getProperty(
-        "checked"
-      )
+      await (
+        await page.$(escapeElementId(guestApiSelector))
+      ).getProperty("checked")
     ).jsonValue();
 
     if (checkedState !== desired) {

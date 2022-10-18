@@ -12,28 +12,32 @@ SFDX plugin for DevOps actions related to Salesforce Development
 [![License](https://img.shields.io/npm/l/sfdx-devops.svg)](https://github.com/aheber/sfdx-devops/blob/master/package.json)
 
 <!-- toc -->
-* [sfdx-devops](#sfdx-devops)
-* [Debugging your plugin](#debugging-your-plugin)
+
+- [sfdx-devops](#sfdx-devops)
+- [Debugging your plugin](#debugging-your-plugin)
 <!-- tocstop -->
-* [sfdx-devops](#sfdx-devops)
-* [Debugging your plugin](#debugging-your-plugin)
+- [sfdx-devops](#sfdx-devops)
+- [Debugging your plugin](#debugging-your-plugin)
 <!-- tocstop -->
 
 <!-- install -->
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g sfdx-devops
 $ sfdx COMMAND
 running command...
 $ sfdx (-v|--version|version)
-sfdx-devops/0.4.5 win32-x64 node-v16.14.0
+sfdx-devops/0.4.8 win32-x64 node-v16.14.0
 $ sfdx --help [COMMAND]
 USAGE
   $ sfdx COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
 ```sh-session
 $ npm install -g sfdx-devops
 $ sfdx COMMAND
@@ -45,13 +49,15 @@ USAGE
   $ sfdx COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 <!-- commands -->
-* [`sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopschatbutton--b-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopsmdsourcecomparebuild--b-string--c-string--o-string--d-string--v-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopssitesettings--s-string--g-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopsworkflowemailalertreplaceaddress--c-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+
+- [`sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopschatbutton--b-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopsmdsourcecomparebuild--b-string--c-string--o-string--d-string--v-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopssitesettings--s-string--g-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopsworkflowemailalertreplaceaddress--c-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
 ## `sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -59,7 +65,7 @@ Load Live Chat Buttons into the org via the UI
 
 ```
 USAGE
-  $ sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -83,7 +89,7 @@ EXAMPLES
   $ devops:chat:buttons -b Button_1,Button_2
 ```
 
-_See code: [src\commands\devops\chat\button.ts](https://github.com/aheber/sfdx-devops/blob/v0.4.5/src\commands\devops\chat\button.ts)_
+_See code: [src\commands\devops\chat\button.ts](https://github.com/aheber/sfdx-devops/blob/v0.4.6/src\commands\devops\chat\button.ts)_
 
 ## `sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -91,7 +97,7 @@ Compare two metadata format source directories and build a third with the change
 
 ```
 USAGE
-  $ sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion 
+  $ sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion
   <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -122,12 +128,12 @@ EXAMPLES
   $ sfdx hello:org --targetusername myOrg@example.com --targetdevhubusername devhub@org.com
      Hello world! This is org: MyOrg and I will be around until Tue Mar 20 2018!
      My hub org id is: 00Dxx000000001234
-  
+
   $ sfdx hello:org --name myname --targetusername myOrg@example.com
      Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
 ```
 
-_See code: [src\commands\devops\mdsource\compare\build.ts](https://github.com/aheber/sfdx-devops/blob/v0.4.5/src\commands\devops\mdsource\compare\build.ts)_
+_See code: [src\commands\devops\mdsource\compare\build.ts](https://github.com/aheber/sfdx-devops/blob/v0.4.6/src\commands\devops\mdsource\compare\build.ts)_
 
 ## `sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -135,7 +141,7 @@ Change settings on a Site
 
 ```
 USAGE
-  $ sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -161,7 +167,7 @@ EXAMPLES
   $ devops:site:settings -s Help_Center -g false
 ```
 
-_See code: [src\commands\devops\site\settings.ts](https://github.com/aheber/sfdx-devops/blob/v0.4.5/src\commands\devops\site\settings.ts)_
+_See code: [src\commands\devops\site\settings.ts](https://github.com/aheber/sfdx-devops/blob/v0.4.6/src\commands\devops\site\settings.ts)_
 
 ## `sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -169,7 +175,7 @@ Compare two metadata format source directories and build a third with the change
 
 ```
 USAGE
-  $ sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel 
+  $ sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -187,12 +193,14 @@ EXAMPLE
   $ sfdx devops:workflow:emailalert:replaceaddress --configfile config/alertconfig.yaml
 ```
 
-_See code: [src\commands\devops\workflow\emailalert\replaceaddress.ts](https://github.com/aheber/sfdx-devops/blob/v0.4.5/src\commands\devops\workflow\emailalert\replaceaddress.ts)_
+_See code: [src\commands\devops\workflow\emailalert\replaceaddress.ts](https://github.com/aheber/sfdx-devops/blob/v0.4.6/src\commands\devops\workflow\emailalert\replaceaddress.ts)_
+
 <!-- commandsstop -->
-* [`sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopschatbutton--b-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopsmdsourcecomparebuild--b-string--c-string--o-string--d-string--v-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopssitesettings--s-string--g-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
-* [`sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopsworkflowemailalertreplaceaddress--c-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+
+- [`sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopschatbutton--b-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopsmdsourcecomparebuild--b-string--c-string--o-string--d-string--v-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopssitesettings--s-string--g-string--u-string---apiversion-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+- [`sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-devopsworkflowemailalertreplaceaddress--c-string---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
 ## `sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -200,7 +208,7 @@ Load Live Chat Buttons into the org via the UI
 
 ```
 USAGE
-  $ sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx devops:chat:button [-b <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -232,7 +240,7 @@ Compare two metadata format source directories and build a third with the change
 
 ```
 USAGE
-  $ sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion 
+  $ sfdx devops:mdsource:compare:build -b <string> -c <string> -o <string> [-d <string>] [-v <string>] [--apiversion
   <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -263,7 +271,7 @@ EXAMPLES
   $ sfdx hello:org --targetusername myOrg@example.com --targetdevhubusername devhub@org.com
      Hello world! This is org: MyOrg and I will be around until Tue Mar 20 2018!
      My hub org id is: 00Dxx000000001234
-  
+
   $ sfdx hello:org --name myname --targetusername myOrg@example.com
      Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
 ```
@@ -276,7 +284,7 @@ Change settings on a Site
 
 ```
 USAGE
-  $ sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel 
+  $ sfdx devops:site:settings -s <string> [-g <string>] [-u <string>] [--apiversion <string>] [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -310,7 +318,7 @@ Compare two metadata format source directories and build a third with the change
 
 ```
 USAGE
-  $ sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel 
+  $ sfdx devops:workflow:emailalert:replaceaddress -c <string> [--json] [--loglevel
   trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
 
 OPTIONS
@@ -329,6 +337,7 @@ EXAMPLE
 ```
 
 _See code: [src\commands\devops\workflow\emailalert\replaceaddress.ts](https://github.com/aheber/sfdx-devops/blob/v0.3.3/src\commands\devops\workflow\emailalert\replaceaddress.ts)_
+
 <!-- commandsstop -->
 
 <!-- debugging-your-plugin -->

@@ -41,22 +41,19 @@ export const fieldData = {
   },
   developerName: {
     fieldType: fieldTypes.text,
-    domSelector:
-      "#j_id0:theForm:thePageBlock:editDataSection:developerNameSection:editDeveloperName",
+    domSelector: "[id$='editDeveloperName']",
   },
   enableQueue: {
     fieldType: fieldTypes.checkbox,
     domSelector: "[id$='editHasQueue']",
   },
-  isActive: {
-    fieldType: fieldTypes.checkbox,
-    domSelector:
-      "#j_id0:theForm:thePageBlock:editDataSection:editActiveItem:editIsActive",
-  },
+  // isActive: { // field is now hidden
+  //   fieldType: fieldTypes.checkbox,
+  //   domSelector: "[id$='editIsActive']",
+  // },
   label: {
     fieldType: fieldTypes.text,
-    domSelector:
-      "#j_id0:theForm:thePageBlock:editDataSection:nameSection:editMasterLabel",
+    domSelector: "[id$='editMasterLabel']",
   },
   optionsHasChasitorIdleTimeout: {
     fieldType: fieldTypes.checkbox,
