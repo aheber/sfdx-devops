@@ -117,14 +117,6 @@ export default class Button extends SfdxCommand {
       );
       // Apply XML to page
       for (const key of Object.keys(fieldData)) {
-        try {
-          await page.waitForSelector(
-            escapeElementId(fieldData[key].domSelector),
-            { timeout: 100, visible: true }
-          );
-        } catch (error) {
-          continue;
-        }
         if (xmlData.LiveChatButton[key]) {
           // Text
           if (fieldData[key].fieldType === fieldTypes.text) {
