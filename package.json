@@ -1,7 +1,7 @@
 {
   "name": "sfdx-devops",
   "description": "SFDX plugin for DevOps actions related to Salesforce Development",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "author": "Anthony Heber @aheber",
   "bugs": "https://github.com/aheber/sfdx-devops/issues",
   "dependencies": {
@@ -11,7 +11,7 @@
     "@oclif/plugin-help": "^5.1.15",
     "@salesforce/command": "^5.2.13",
     "@salesforce/core": "^3.31.10",
-    "@salesforce/plugin-org": "^2.2.9",
+    "@salesforce/plugin-org": "^2.4.3",
     "@salesforce/ts-sinon": "^1.2.3",
     "deep-equal": "^2.0.3",
     "deep-object-diff": "^1.1.0",
