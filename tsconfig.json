@@ -1,11 +1,10 @@
 {
-  "extends": "./node_modules/@salesforce/dev-config/tsconfig",
+  "extends": "@salesforce/dev-config/tsconfig-strict-esm",
   "compilerOptions": {
-    "skipLibCheck": true,
-    "outDir": "./lib",
-    "rootDir": "./src"
+    "lib": ["dom", "ES2022"],
+    "outDir": "lib",
+    "rootDir": "src",
+    "skipLibCheck": true
   },
-  "lib": ["es2018", "es2018.promise"],
-  "include": ["./src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["./src/**/*.ts"]
 }

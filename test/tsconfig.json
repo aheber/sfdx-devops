@@ -1,0 +1,8 @@
+{
+  "extends": "@salesforce/dev-config/tsconfig-test-strict-esm",
+  "include": ["./**/*.ts"],
+  "compilerOptions": {
+    "lib": ["dom", "ES2022"],
+    "skipLibCheck": true
+  }
+}

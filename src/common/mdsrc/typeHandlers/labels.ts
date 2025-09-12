@@ -1,7 +1,8 @@
-import MetadataDiff from "./type-metadata-base";
+/* eslint-disable class-methods-use-this */
+import MetadataDiff from './type-metadata-base.js';
 
 export default class LabelDiff extends MetadataDiff {
-  getCoreObjectName() {
-    return "CustomLabels";
+  public getCoreObjectName(): string {
+    return 'CustomLabels';
   }
 }

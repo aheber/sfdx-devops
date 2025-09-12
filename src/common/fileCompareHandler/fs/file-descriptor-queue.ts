@@ -1,78 +1,92 @@
-"use strict";
+'use strict';
 
-import * as fs from "fs";
-import { Queue } from "./queue";
+import * as fs from 'node:fs';
+
+import { Queue } from './queue.js';
 /**
  * Limits the number of concurrent file handlers.
  * Use it as a wrapper over fs.open() and fs.close().
  * Example:
- *  var fdQueue = new FileDescriptorQueue(8)
- *  fdQueue.open(path, flags, (err, fd) =>{
- *    ...
- *    fdQueue.close(fd, (err) =>{
- *      ...
- *    })
- *  })
- *  As of node v7, calling fd.close without a callback is deprecated.
+ * var fdQueue = new FileDescriptorQueue(8)
+ * fdQueue.open(path, flags, (err, fd) =>{
+ * ...
+ * fdQueue.close(fd, (err) =>{
+ * ...
+ * })
+ * })
+ * As of node v7, calling fd.close without a callback is deprecated.
+ *
  * @param {number} maxFilesNo hwo many concurrent file handlers should be created
  * @returns {any} returns a File Descriptor Queue
  */
-export function FileDescriptorQueue(maxFilesNo) {
-  const pendingJobs = new Queue();
-  let activeCount = 0;
+export class FileDescriptorQueue {
+  public promises;
+  private maxFilesNo;
+  private activeCount = 0;
+  private pendingJobs;
 
-  const process = function() {
-    if (pendingJobs.getLength() > 0 && activeCount < maxFilesNo) {
-      const job = pendingJobs.dequeue();
-      activeCount++;
+  public constructor(maxFilesNo: number) {
+    this.maxFilesNo = maxFilesNo;
+    this.pendingJobs = new Queue<{
+      callback: (err: NodeJS.ErrnoException | null, fd: number) => void;
+      flags: fs.OpenMode | undefined;
+      path: fs.PathLike;
+    }>();
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const that = this;
+
+    this.promises = {
+      close(fd: number): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+          that.close(fd, (err) => {
+            if (err) {
+              reject(err);
+            }
+            resolve();
+          });
+        });
+      },
+
+      open(path: string, flags: fs.OpenMode | undefined): Promise<number> {
+        return new Promise((resolve, reject) => {
+          that.open(path, flags, (err, fd) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(fd);
+            }
+          });
+        });
+      },
+    };
+  }
+  public process(): void {
+    if (this.pendingJobs.getLength() > 0 && this.activeCount < this.maxFilesNo) {
+      const job = this.pendingJobs.dequeue();
+      this.activeCount++;
+      if (job == null) {
+        throw new Error('No job available to process');
+      }
       fs.open(job.path, job.flags, job.callback);
     }
-  };
+  }
 
-  const open = function(path, flags, callback) {
-    pendingJobs.enqueue({
-      path: path,
-      flags: flags,
-      callback: callback,
+  public open(
+    path: string,
+    flags: fs.OpenMode | undefined,
+    callback: (err: NodeJS.ErrnoException | null, fd: number) => void
+  ): void {
+    this.pendingJobs.enqueue({
+      callback,
+      flags,
+      path,
     });
-    process();
-  };
+    this.process();
+  }
 
-  const close = function(fd, callback) {
-    activeCount--;
+  public close(fd: number, callback: fs.NoParamCallback): void {
+    this.activeCount--;
     fs.close(fd, callback);
-    process();
-  };
-
-  const promises = {
-    open: function(path, flags) {
-      return new Promise(function(resolve, reject) {
-        open(path, flags, function(err, fd) {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(fd);
-          }
-        });
-      });
-    },
-
-    close: function(fd) {
-      return new Promise<void>(function(resolve, reject) {
-        close(fd, function(err) {
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
-    },
-  };
-
-  return {
-    open: open,
-    close: close,
-    promises: promises,
-  };
+    this.process();
+  }
 }

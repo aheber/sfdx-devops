@@ -1,7 +1,8 @@
-import MetadataDiff from "./type-metadata-base";
+/* eslint-disable class-methods-use-this */
+import MetadataDiff from './type-metadata-base.js';
 
 export default class WorkflowDiff extends MetadataDiff {
-  getCoreObjectName() {
-    return "Workflow";
+  public getCoreObjectName(): string {
+    return 'Workflow';
   }
 }

@@ -1,116 +1,113 @@
-import { flags, SfdxCommand } from "@salesforce/command";
-import { Messages } from "@salesforce/core";
-import { getBrowser } from "../../../common/browser/browser-main";
-import { escapeElementId } from "../../../common/browser/browser-helpers";
+import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
+import { Messages, SfError } from '@salesforce/core';
+import { Connection } from '@salesforce/core';
+import { Page, Browser } from 'puppeteer';
+import { CLIError } from '@oclif/core/errors';
+import type { AnyJson } from '@salesforce/ts-types';
 
-import { URL } from "url";
+import { escapeElementId } from '../../../common/browser/browser-helpers.js';
+import { getBrowser } from '../../../common/browser/browser-main.js';
+import type { ProjectConfig } from '../chat/button.js';
 
-// Initialize Messages with the current plugin directory
-Messages.importMessagesDirectory(__dirname);
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('sfdx-devops', 'devops.site.settings');
 
-// Load the specific messages for this file. Messages from @salesforce/command, @salesforce/core,
-// or any library that is using the messages framework can also be loaded this way.
-const messages = Messages.loadMessages("sfdx-devops", "siteSettings");
+export type DevopsSiteSettingsResult = {
+  path?: string;
+};
 
-export default class Settings extends SfdxCommand {
-  public static description = messages.getMessage("commandDescription");
+export default class DevopsSiteSettings extends SfCommand<DevopsSiteSettingsResult> {
+  public static readonly summary = messages.getMessage('summary');
+  public static readonly description = messages.getMessage('description');
+  public static readonly examples = messages.getMessages('examples');
+  public static readonly requiresUsername = true;
 
-  public static examples = [
-    "$ devops:site:settings -s Help_Center -g true",
-    "$ devops:site:settings -s Help_Center -g false",
-  ];
-
-  public static args = [];
-
-  private browser;
-
-  protected static flagsConfig = {
-    sitename: flags.string({
-      char: "s",
+  public static readonly flags = {
+    guestapi: Flags.string({
+      summary: messages.getMessage('flags.guestapi.summary'),
+      char: 'g',
+    }),
+    sitename: Flags.string({
+      summary: messages.getMessage('flags.sitename.summary'),
+      char: 's',
       required: true,
-      description: messages.getMessage("sitenameFlagDescription"),
     }),
-    guestapi: flags.string({
-      char: "g",
-      required: false,
-      options: ["true", "false"],
-      description: messages.getMessage("guestApiFlagDescription"),
-    }),
+    'target-org': Flags.requiredOrg(),
   };
 
-  // Comment this out if your command does not require an org username
-  protected static requiresUsername = true;
+  private browser?: Browser;
 
-  // Set this to true if your command requires a project workspace; 'requiresProject' is false by default
-  protected static requiresProject = false;
+  public async catch(error: Error | CLIError | SfError<AnyJson>): Promise<never> {
+    if (this.browser) {
+      await this.browser.close();
+    }
 
-  public async run(): Promise<void> {
+    await super.catch(error);
+    throw error;
+  }
+
+  public async run(): Promise<DevopsSiteSettingsResult> {
+    const { flags } = await this.parse(DevopsSiteSettings);
+
     // use puppeteer to set the community settings
+    const username = flags['target-org'].getUsername();
+    if (!username) {
+      throw new Error('Username not specified');
+    }
+    // read in the project json to get the source paths
+    const projectJson = (await this.project?.resolveProjectConfig()) as ProjectConfig;
+    const connection = flags['target-org'].getConnection(projectJson.sourceApiVersion);
 
-    const username = this.org.getUsername();
-
-    const [browser, page] = await getBrowser(username);
+    const [browser, page] = await getBrowser(this.config.runCommand.bind(this), username);
     this.browser = browser;
     // Workaround for not being able to manage Site.OptionsAllowGuestSupportApi via Metadata
     // https://success.salesforce.com/ideaView?id=0873A000000CYQzQAO
 
     /// Get URL for edit on Site
-    const siteId = await this.getSiteURL(this.flags.sitename);
+    const siteId = await getSiteURL(connection, flags.sitename);
     let url = page.mainFrame().url();
     const orgBaseURL = new URL(url).origin;
     url = `${orgBaseURL}/${siteId}/e`;
     /// Check the box for Support API Access
-    await page.goto(url, { waitUntil: "networkidle0" });
+    await page.goto(url, { waitUntil: 'networkidle0' });
 
-    try {
-      /* Start settings management */
-      if (this.flags.guestapi) {
-        await this.setGuestApi(page, this.flags.guestapi === "true");
-      }
-
-      /* Save the site */
-      await Promise.all([
-        page.click(
-          escapeElementId(
-            "#thePage:theForm:thePageBlock:thePageBlockButtons:save"
-          )
-        ),
-        page.waitForNavigation({ waitUntil: "networkidle0" }),
-      ]);
-    } catch (error) {
-      console.error("Browser: ERROR: Error saving Support API setting", error);
-      throw error;
+    /* Start settings management */
+    if (flags.guestapi) {
+      await setGuestApi(page, flags.guestapi === 'true');
     }
+
+    /* Save the site */
+    await Promise.all([
+      page.click(escapeElementId('#thePage:theForm:thePageBlock:thePageBlockButtons:save')),
+      page.waitForNavigation({ waitUntil: 'networkidle0' }),
+    ]);
+
     await this.browser.close();
+    return {};
   }
+}
 
-  async catch(error) {
-    if (this.browser) {
-      await this.browser.close();
-    }
-    super.catch(error);
+async function getSiteURL(connection: Connection, siteName: string): Promise<string> {
+  const site = await connection.sobject('Site').findOne({ Name: siteName });
+  if (!site) {
+    throw new Error('Unable to find Site named ' + siteName);
   }
+  return site.Id as string;
+}
 
-  async getSiteURL(siteName) {
-    const conn = this.org.getConnection();
-    const site = await conn.sobject("Site").findOne({ Name: siteName });
-    return site.Id;
+async function setGuestApi(page: Page, desired: boolean): Promise<void> {
+  const guestApiSelector = '#thePage:theForm:thePageBlock:thePageBlockSection:supportApiSection:AllowGuestSupportApi';
+  await page.waitForSelector(escapeElementId(guestApiSelector), {
+    timeout: 20 * 1000,
+  });
+  const escapedSelector = escapeElementId(guestApiSelector);
+  const selectedElement = await page.$(escapedSelector);
+  if (!selectedElement) {
+    throw new Error(`Unable to find "${guestApiSelector}" on page`);
   }
+  const checkedState = await (await selectedElement.getProperty('checked')).jsonValue();
 
-  async setGuestApi(page, desired) {
-    const guestApiSelector =
-      "#thePage:theForm:thePageBlock:thePageBlockSection:supportApiSection:AllowGuestSupportApi";
-    await page.waitForSelector(escapeElementId(guestApiSelector), {
-      timeout: 20 * 1000,
-    });
-    const checkedState = await (
-      await (await page.$(escapeElementId(guestApiSelector))).getProperty(
-        "checked"
-      )
-    ).jsonValue();
-
-    if (checkedState !== desired) {
-      await page.click(escapeElementId(guestApiSelector));
-    }
+  if (checkedState !== desired) {
+    await page.click(escapeElementId(guestApiSelector));
   }
 }

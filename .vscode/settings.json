@@ -1,3 +1,17 @@
 {
-    "eslint.nodePath": "c:\\Users\\aheber\\.vscode\\extensions\\salesforce.salesforcedx-vscode-lwc-47.15.0\\node_modules"
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true
+  },
+  "search.exclude": {
+    "**/lib": true,
+    "**/bin": true
+  },
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "rewrap.wrappingColumn": 80,
+  "typescript.tsdk": "./node_modules/typescript/lib"
 }

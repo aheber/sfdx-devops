@@ -11,48 +11,48 @@ http://creativecommons.org/publicdomain/zero/1.0/legalcode
 
 */
 
-const MAX_UNUSED_ARRAY_SIZE = 10000;
+const MAX_UNUSED_ARRAY_SIZE = 10_000;
 
 /* Creates a new queue. A queue is a first-in-first-out (FIFO) data structure -
  * items are added to the end of the queue and removed from the front.
  */
-export function Queue() {
+export class Queue<T> {
   // initialise the queue and offset
-  let queue = [];
-  let offset = 0;
+  private queue: T[] = [];
+  private offset = 0;
 
   // Returns the length of the queue.
-  this.getLength = function() {
-    return queue.length - offset;
-  };
+  public getLength(): number {
+    return this.queue.length - this.offset;
+  }
 
   /* Enqueues the specified item. The parameter is:
    *
    * item - the item to enqueue
    */
-  this.enqueue = function(item) {
-    queue.push(item);
-  };
+  public enqueue(item: T): void {
+    this.queue.push(item);
+  }
 
   /* Dequeues an item and returns it. If the queue is empty, the value
    * 'undefined' is returned.
    */
-  this.dequeue = function() {
+  public dequeue(): T | undefined {
     // if the queue is empty, return immediately
-    if (queue.length === 0) {
-      return undefined;
+    if (this.queue.length === 0) {
+      return;
     }
 
     // store the item at the front of the queue
-    const item = queue[offset];
+    const item = this.queue[this.offset];
 
     // increment the offset and remove the free space if necessary
-    if (++offset > MAX_UNUSED_ARRAY_SIZE) {
-      queue = queue.slice(offset);
-      offset = 0;
+    if (++this.offset > MAX_UNUSED_ARRAY_SIZE) {
+      this.queue = this.queue.slice(this.offset);
+      this.offset = 0;
     }
 
     // return the dequeued item
     return item;
-  };
+  }
 }

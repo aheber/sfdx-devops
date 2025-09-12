@@ -1,79 +1,68 @@
 /* eslint-disable guard-for-in */
-import { Builder } from "xml2js";
-import TypeDiffXml from "./type-diff-xml";
-import { detailedDiff } from "deep-object-diff";
+import { detailedDiff } from 'deep-object-diff';
+import { Builder } from 'xml2js';
 
-export default abstract class MetadataDiff extends TypeDiffXml {
-  abstract getCoreObjectName(): string;
+import TypeDiffXml from './type-diff-xml.js';
 
-  protected getSubComponentNameKey(): string | { [key: string]: string } {
-    return "fullName";
-  }
+export type XmlBody = Record<string, XmlNode>;
 
-  public async compare(p1, p2) {
+export type XmlNode = {
+  [key in string]: Array<XmlNode | string>;
+} & {
+  $?: Record<string, string>;
+};
+
+type ObjectParts = {
+  core: XmlNode;
+  components: Record<string, Record<string, XmlNode>>;
+};
+
+export abstract class MetadataDiffCore extends TypeDiffXml {
+  public async compare(p1: string, incomingContent: string, p2: string, existingContent: string): Promise<boolean> {
     // console.log("Comparing objects", p1, p2);
-    const changes = await this.getChanges(p1, p2);
+    const changes = await this.getChanges(incomingContent, existingContent);
     return Object.keys(changes[this.getCoreObjectName()]).length === 0;
   }
 
-  public async buildOutput(p1, p2) {
-    // console.log("Building Output for objects", p1, p2);
-    const changes = await this.getChanges(p1, p2);
-    const builder = new Builder({
-      xmldec: { version: "1.0", encoding: "UTF-8" },
-    });
-    return builder.buildObject(changes);
-  }
-
-  protected async getChanges(p1, p2) {
-    const xmls = await this.loadXMLData(p1, p2);
+  public async getChanges(incomingContent: string, existingContent: string): Promise<XmlBody> {
+    const xmls = await this.loadXMLData<XmlBody>(incomingContent, existingContent);
     // const changes = {} as any;
     // part out into core properties and sub-objects, handle special-case sub-objects
     const pieces1 = this.breakObjectIntoParts(xmls[0]);
     const pieces2 = this.breakObjectIntoParts(xmls[1]);
     const changes = this.getDifferences(pieces1.components, pieces2.components);
 
-    if (
-      Object.keys(changes[this.getCoreObjectName()]).length > 0 ||
-      this.wouldChangeOrg(pieces1.core, pieces2.core)
-    ) {
-      changes[this.getCoreObjectName()] = Object.assign(
-        changes[this.getCoreObjectName()],
-        pieces1.core
-      );
+    if (Object.keys(changes[this.getCoreObjectName()]).length > 0 || this.wouldChangeOrg(pieces1.core, pieces2.core)) {
+      changes[this.getCoreObjectName()] = Object.assign(changes[this.getCoreObjectName()], pieces1.core);
     }
     // for each subobject, identify any changes
     // for the core properties, determine if there are any changes
     return changes;
   }
-
-  protected breakObjectIntoParts(xml) {
-    const data = {
-      core: {} as { [key: string]: any },
-      components: {} as { [key: string]: any },
+  protected breakObjectIntoParts(xml: XmlBody): ObjectParts {
+    const data: ObjectParts = {
+      core: {},
+      components: {},
     };
     // look through each key inside the core object
     // console.log(xml);
-    // eslint-disable-next-line guard-for-in
-    for (const k in xml[this.getCoreObjectName()]) {
-      const subset = xml[this.getCoreObjectName()][k];
+    // eslint-disable-next-line @typescript-eslint/no-for-in-array
+    const coreObject = xml[this.getCoreObjectName()];
+    for (const k in coreObject) {
+      const subset = coreObject[k];
       const names = this.getSubComponentNameKey();
-      let typeName;
-      if (typeof names === "object" && names[k] !== undefined) {
-        typeName = names[k];
+      let typeNameField;
+      if (typeof names === 'object' && names[k] !== undefined) {
+        typeNameField = names[k];
       } else {
-        typeName = names as string;
+        typeNameField = names as string;
       }
       // If the nested object contains a fullName attribute
-      if (
-        typeName !== undefined &&
-        typeof subset[0] === "object" &&
-        subset[0][typeName]
-      ) {
-        const d = {};
-        // eslint-disable-next-line guard-for-in
-        for (const m of subset) {
-          d[m[typeName]] = m;
+      if (typeNameField !== undefined && typeof subset[0] === 'object' && subset[0]?.[typeNameField]) {
+        const d: Record<string, XmlNode> = {};
+        for (const m of subset as XmlNode[]) {
+          const key = m[typeNameField][0] as string;
+          d[key] = m;
         }
         data.components[k] = d;
         // console.log("k", k);
@@ -86,21 +75,13 @@ export default abstract class MetadataDiff extends TypeDiffXml {
     return data;
   }
 
-  protected wouldChangeOrg(o1, o2) {
-    const diff = detailedDiff(o1, o2) as any;
-    if (
-      Object.keys(diff.deleted).length > 0 ||
-      Object.keys(diff.updated).length > 0
-    ) {
-      return true;
-    }
-    return false;
-  }
-
-  protected getDifferences(l1, l2): any {
-    const changes = {};
+  protected getDifferences(
+    l1: Record<string, Record<string, XmlNode>>,
+    l2: Record<string, Record<string, XmlNode>>
+  ): XmlBody {
+    const changes: Record<string, XmlNode[]> = {};
     for (const k in l1) {
-      if (k === "Core") {
+      if (k === 'Core') {
         continue;
       }
       const p1 = l1[k];
@@ -123,8 +104,32 @@ export default abstract class MetadataDiff extends TypeDiffXml {
         }
       }
     }
-    const output = {};
-    output[this.getCoreObjectName()] = changes;
-    return output;
+    return { [this.getCoreObjectName()]: changes };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  protected getSubComponentNameKey(): string | Record<string, string> {
+    return 'fullName';
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  protected wouldChangeOrg(o1: object, o2: object): boolean {
+    const diff = detailedDiff(o1, o2);
+    if (Object.keys(diff.deleted).length > 0 || Object.keys(diff.updated).length > 0) {
+      return true;
+    }
+    return false;
+  }
+  public abstract getCoreObjectName(): string;
+}
+
+export default abstract class MetadataDiff extends MetadataDiffCore {
+  public async buildOutput(incomingContent: string, existingContent: string): Promise<string> {
+    // console.log("Building Output for objects", p1, p2);
+    const changes = await this.getChanges(incomingContent, existingContent);
+    const builder = new Builder({
+      xmldec: { version: '1.0', encoding: 'UTF-8' },
+    });
+    return builder.buildObject(changes);
   }
 }

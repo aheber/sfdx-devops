@@ -1,24 +1,19 @@
-import * as eol from "eol";
-import * as fs from "fs-extra";
+/* eslint-disable class-methods-use-this */
+// import { readFile } from 'node:fs/promises';
 
 export default class TypeDiffBase {
-  public async compare(p1, p2): Promise<boolean> {
-    const datas = await this.loadData(p1, p2);
-    return datas[0] === datas[1];
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async compare(p1: string, content1: string, p2: string, content2: string): Promise<boolean> {
+    return content1 === content2;
   }
 
-  public loadData(p1, p2): Promise<string[]> {
-    return Promise.all([fs.readFile(p1), fs.readFile(p2)]).then(datas => {
-      return datas.map(d => {
-        return eol.lf(d.toString("utf8"));
-      });
-    });
+  public removeWhiteSpace(s: string): string {
+    return s.replaceAll(/  +|[\t\n\v\f\r\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]+/g, '');
   }
 
-  public removeWhiteSpace(s) {
-    return s.replace(
-      /  +|[\f\t\v\r\n\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/g,
-      "",
-    );
-  }
+  public addToPackageXml?(filepath: string, fileContent: string): Promise<Record<string, string[]>>;
+
+  public async addFiles?(filepath: string, fileContent: string): Promise<Array<{ content: string; path: string }>>;
+
+  public async buildOutput?(incomingContent: string, existingContent: string): Promise<string>;
 }

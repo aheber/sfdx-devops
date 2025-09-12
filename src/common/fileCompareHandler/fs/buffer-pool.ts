@@ -1,46 +1,37 @@
+export type BufferPair = { buf1: Buffer; buf2: Buffer; busy: boolean };
+
 /**
  * Collection of buffers to be shared between async processes.
  * Avoids allocating buffers each time async process starts.
- * @param {number} bufSize - size of each buffer
- * @param {number} bufNo - number of buffers
- * @returns {any} - a buffer
  * Caller has to make sure no more than bufNo async processes run simultaneously.
  */
-export function BufferPool(bufSize, bufNo): any {
-  const bufferPool = [];
+export class BufferPool {
+  private bufferPool: BufferPair[] = [];
 
-  function alloc(bufSize) {
-    if (Buffer.alloc) {
-      return Buffer.alloc(bufSize);
+  public constructor(bufSize: number, bufNo: number) {
+    for (let i = 0; i < bufNo; i++) {
+      this.bufferPool.push({
+        buf1: Buffer.alloc(bufSize),
+        buf2: Buffer.alloc(bufSize),
+        busy: false,
+      });
     }
-    return Buffer.from(bufSize);
   }
 
-  for (let i = 0; i < bufNo; i++) {
-    bufferPool.push({
-      buf1: alloc(bufSize),
-      buf2: alloc(bufSize),
-      busy: false
-    });
-  }
-
-  const allocateBuffers = function() {
-    for (let j = 0; j < bufNo; j++) {
-      const bufferPair = bufferPool[j];
+  public allocateBuffers(): BufferPair {
+    for (const bufferPair of this.bufferPool) {
       if (!bufferPair.busy) {
         bufferPair.busy = true;
         return bufferPair;
       }
     }
-    throw new Error("Async buffer limit reached");
-  };
 
-  function freeBuffers(bufferPair) {
-    bufferPair.busy = false;
+    throw new Error('Async buffer limit reached');
   }
 
-  return {
-    allocateBuffers: allocateBuffers,
-    freeBuffers: freeBuffers
-  };
+  // eslint-disable-next-line class-methods-use-this
+  public freeBuffers(bufferPair: BufferPair): void {
+    // eslint-disable-next-line no-param-reassign
+    bufferPair.busy = false;
+  }
 }

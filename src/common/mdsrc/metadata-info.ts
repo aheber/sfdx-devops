@@ -1,28 +1,54 @@
-import * as fs from "fs-extra";
-import { join } from "path";
+import { join } from 'node:path';
+import { readFileSync, readdirSync } from 'node:fs';
+type TypeBaseImportType = typeof import('./typeHandlers/type-diff-base.js');
+import type TypeBase from './typeHandlers/type-diff-base.js';
 
-let metadataCache;
+export type TypeDef = {
+  metadataName: string;
+  isAddressable: boolean;
+  isSourceTracked: boolean;
+  ext?: string;
+  hasContent: boolean;
+  defaultDirectory: string;
+  nameForMsgs: string;
+  nameForMsgsPlural: string;
+  contentIsBinary: boolean;
+  hasStandardMembers?: boolean;
+  deleteSupported: boolean;
+  hasVirtualSubtypes?: boolean;
+  childXmlNames?: string[];
+  parent?: TypeDef;
+  inFolder?: boolean;
+  folderTypeDef?: TypeDef;
+  mdtHandler?: TypeBase;
+};
 
-export async function getMetadataInfo() {
+type MetadataInfo = {
+  typeDefs: Record<string, TypeDef>;
+};
+
+let metadataCache: Record<string, TypeDef>;
+
+export async function getMetadataInfo(): Promise<Record<string, TypeDef>> {
   if (metadataCache) {
     return metadataCache;
   }
-  metadataCache = {};
-  const info = JSON.parse(
-    fs.readFileSync("./config/metadataTypeInfos.json").toString()
-  );
-  const customFilesHandlers = {};
 
-  const fileNames = fs.readdirSync(join(__dirname, "typeHandlers"));
+  metadataCache = {};
+  const info = JSON.parse(readFileSync('./config/metadataTypeInfos.json').toString()) as MetadataInfo;
+  const customFilesHandlers: Record<string, boolean> = {};
+
+  const fileNames = readdirSync(join(import.meta.dirname, 'typeHandlers'));
   for (let f of fileNames) {
-    f = f.replace(/\..+/, "");
+    f = f.replace(/\..+/, '');
     customFilesHandlers[f] = true;
   }
-  // eslint-disable-next-line guard-for-in
+
   for (const type in info.typeDefs) {
     if (!info.typeDefs[type].isAddressable) {
       continue;
     }
+
     // infoByDir[info.typeDefs[type].defaultDirectory] = info.typeDefs[type];
     const dir = info.typeDefs[type].defaultDirectory;
     metadataCache[dir] = info.typeDefs[type];
@@ -31,16 +57,15 @@ export async function getMetadataInfo() {
       // If directory contains, then try and import
       if (customFilesHandlers[dir]) {
         // eslint-disable-next-line no-await-in-loop
-        metadataCache[dir].mdtHandler = await import(
-          `./typeHandlers/${dir}`
-        ).then((l) => {
-          // eslint-disable-next-line new-cap
-          return new l.default();
-        });
+        metadataCache[dir].mdtHandler = await import(`./typeHandlers/${dir}.js`).then(
+          (l: TypeBaseImportType) => new l.default()
+        );
       }
     } catch (error) {
-      console.log("Loading Error:", error);
+      // eslint-disable-next-line no-console
+      console.log('Loading Error:', error);
     }
   }
+
   return metadataCache;
 }

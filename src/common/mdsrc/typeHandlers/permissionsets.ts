@@ -1,27 +1,25 @@
-import MetadataDiff from "./type-metadata-base";
+/* eslint-disable class-methods-use-this */
+import { MetadataDiffCore } from './type-metadata-base.js';
 
-export default class PermissionSetsDiff extends MetadataDiff {
-  getCoreObjectName() {
-    return "PermissionSet";
+export default class PermissionSetsDiff extends MetadataDiffCore {
+  public getCoreObjectName(): string {
+    return 'PermissionSet';
   }
 
-  // Don't build partial perm-sets, always deliver the source version
-  buildOutput = undefined;
-
-  getSubComponentNameKey() {
+  public getSubComponentNameKey(): Record<string, string> {
     return {
-      applicationVisibilities: "application",
-      classAccesses: "apexClass",
-      customMetadataTypeAccesses: "name",
-      customPermissions: "name",
-      customSettingAccesses: "name",
-      externalDataSourceAccesses: "externalDataSource",
-      fieldPermissions: "field",
-      objectPermissions: "object",
-      pageAccesses: "apexPage",
-      recordTypeVisibilities: "recordType",
-      tabSettings: "tab",
-      userPermissions: "name",
+      applicationVisibilities: 'application',
+      classAccesses: 'apexClass',
+      customMetadataTypeAccesses: 'name',
+      customPermissions: 'name',
+      customSettingAccesses: 'name',
+      externalDataSourceAccesses: 'externalDataSource',
+      fieldPermissions: 'field',
+      objectPermissions: 'object',
+      pageAccesses: 'apexPage',
+      recordTypeVisibilities: 'recordType',
+      tabSettings: 'tab',
+      userPermissions: 'name',
     };
   }
 }

@@ -1,23 +1,23 @@
-/* eslint-disable unicorn/filename-case */
-import MetadataDiff from "./type-metadata-base";
+/* eslint-disable class-methods-use-this */
+import MetadataDiff from './type-metadata-base.js';
 
 export default class ObjectTranslationDiff extends MetadataDiff {
-  getCoreObjectName() {
-    return "Translations";
+  public getCoreObjectName(): string {
+    return 'Translations';
   }
 
-  getSubComponentNameKey() {
+  public getSubComponentNameKey(): Record<string, string> {
     return {
-      customApplications: "name",
-      customLabels: "name",
-      customPageWebLinks: "name",
-      customTabs: "name",
-      flowDefinitions: "fullName",
-      globalPicklists: "name",
-      prompts: "name",
-      quickActions: "name",
-      reportTypes: "name",
-      scontrols: "name"
+      customApplications: 'name',
+      customLabels: 'name',
+      customPageWebLinks: 'name',
+      customTabs: 'name',
+      flowDefinitions: 'fullName',
+      globalPicklists: 'name',
+      prompts: 'name',
+      quickActions: 'name',
+      reportTypes: 'name',
+      scontrols: 'name',
     };
   }
 }

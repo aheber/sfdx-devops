@@ -1,75 +1,70 @@
-import {flags, SfdxCommand} from "@salesforce/command";
-import {Messages} from "@salesforce/core";
-import compare from "../../../../common/mdsrc/compare";
+import { SfCommand, Flags } from '@salesforce/sf-plugins-core';
+import { Messages } from '@salesforce/core';
 
-// Initialize Messages with the current plugin directory
-Messages.importMessagesDirectory(__dirname);
+import compare from '../../../../common/mdsrc/compare.js';
 
-// Load the specific messages for this file. Messages from @salesforce/command, @salesforce/core,
-// or any library that is using the messages framework can also be loaded this way.
-const messages = Messages.loadMessages("sfdx-devops", "mdsourceCompareBuild");
+Messages.importMessagesDirectoryFromMetaUrl(import.meta.url);
+const messages = Messages.loadMessages('sfdx-devops', 'devops.mdsource.compare.build');
 
-export default class Build extends SfdxCommand {
-  public static description = messages.getMessage("commandDescription");
+export type DevopsMdsourceCompareBuildResult = object;
 
-  public static examples = [
-    `$ sfdx hello:org --targetusername myOrg@example.com --targetdevhubusername devhub@org.com
-  Hello world! This is org: MyOrg and I will be around until Tue Mar 20 2018!
-  My hub org id is: 00Dxx000000001234
-  `,
-    `$ sfdx hello:org --name myname --targetusername myOrg@example.com
-  Hello myname! This is org: MyOrg and I will be around until Tue Mar 20 2018!
-  `,
-  ];
+export default class DevopsMdsourceCompareBuild extends SfCommand<DevopsMdsourceCompareBuildResult> {
+  public static readonly summary = messages.getMessage('summary');
+  public static readonly description = messages.getMessage('description');
+  public static readonly examples = messages.getMessages('examples');
+  public static readonly requiresProject = true;
 
-  public static args = [];
-
-  protected static flagsConfig = {
-    // flag with a value (-n, --name=VALUE)
-    basedir: flags.string({
-      char: "b",
-      required: true,
-      description: messages.getMessage("basedirFlagDescription"),
+  public static readonly flags = {
+    name: Flags.string({
+      summary: messages.getMessage('flags.name.summary'),
+      description: messages.getMessage('flags.name.description'),
+      char: 'n',
+      required: false,
     }),
-    changeddir: flags.string({
-      char: "c",
+    basedir: Flags.directory({
+      summary: messages.getMessage('flags.basedir.summary'),
+      char: 'b',
       required: true,
-      description: messages.getMessage("changeddirFlagDescription"),
+      exists: true,
     }),
-    outputdir: flags.string({
-      char: "o",
+    changeddir: Flags.directory({
+      summary: messages.getMessage('flags.changeddir.summary'),
+      char: 'c',
       required: true,
-      description: messages.getMessage("outputdirFlagDescription"),
+      exists: true,
     }),
-    destructivechanges: flags.string({
-      char: "d",
-      options: ["pre", "post"],
-      description: messages.getMessage("destructivechangesFlagDescription"),
+    destructivechanges: Flags.option({
+      summary: messages.getMessage('flags.destructivechanges.summary'),
+      char: 'd',
+      options: ['pre', 'post'] as const,
+    })(),
+    outputdir: Flags.directory({
+      summary: messages.getMessage('flags.outputdir.summary'),
+      char: 'p',
+      required: true,
     }),
   };
 
-  // Comment this out if your command does not require an org username
-  protected static requiresUsername = false;
+  public async run(): Promise<DevopsMdsourceCompareBuildResult> {
+    const { flags } = await this.parse(DevopsMdsourceCompareBuild);
 
-  // Comment this out if your command does not support a hub org username
-  protected static supportsDevhubUsername = true;
-
-  // Set this to true if your command requires a project workspace; 'requiresProject' is false by default
-  protected static requiresProject = true;
-
-  public async run(): Promise<void> {
     // List files present in the org and missing from the src
     // var options = {compareContent: true};
     // read in project file to set the target API version
-    const blockedTypes = ["StaticResource", "PlatformCachePartition"];
+    const blockedTypes = ['StaticResource', 'PlatformCachePartition'];
+
+    if (!this.project) {
+      throw new Error('Should be run in a project context');
+    }
 
     const projectJson = await this.project.resolveProjectConfig();
-    return compare({
-      apiVersion: projectJson.sourceApiVersion,
-      path1: this.flags.basedir,
-      path2: this.flags.changeddir,
-      outputPath: this.flags.outputdir,
+    await compare({
+      apiVersion: projectJson.sourceApiVersion as string,
       blockedTypes,
+      outputPath: flags.outputdir,
+      path1: flags.basedir,
+      path2: flags.changeddir,
     });
+    return {};
   }
 }
